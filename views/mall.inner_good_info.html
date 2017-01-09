@@ -1,0 +1,193 @@
+<div pagetitle>
+    <span ng-if="edit">自营商品详情</span>
+    <span ng-if="!edit">添加自营商品</span>
+</div>
+<div goback>
+    <span ng-if="edit">
+    <div class="dropdown" ng-if="data.status==1">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">推荐<span class="caret"></span></button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+            <li role="presentation"><a add-recommend data-type="ad_mall_index" data-object_id="{{data.id}}" data-object_type="good">推荐商城首页Banner</a></li>
+            <li role="presentation"><a add-recommend data-type="new_good" data-object_id="{{data.id}}" data-object_type="good">推荐商城最新商品</a></li>
+            <li role="presentation"><a add-recommend data-type="nav_good_{{data.category.navigation.index}}" data-object_id="{{data.id}}" data-object_type="good">推荐商城首页导航</a></li>
+        </ul>
+    </div>
+    </span>
+</div>
+<div class="form-content">
+    <form class="form-horizontal" role="form" ng-submit="submit()">
+        <div forminput="所属导航" required>
+            <ul selectcon ng-model="data.navigation_id">
+                <li selectvalue="{{nav.id}}" ng-repeat="nav in filternav">{{nav.name}}</li>
+            </ul>
+        </div>
+        <div forminput="所属类别" required>
+            <ul selectcon ng-model="data.category_id">
+                <li selectvalue="{{cate.id}}" ng-repeat="cate in filtercate">{{cate.name}}</li>
+            </ul>
+        </div>
+        <div forminput="商品范畴" required>
+            <ul selectcon ng-model="data.goods_category">
+                <li selectvalue="0">实物商品</li>
+                <li selectvalue="1">虚拟商品</li>
+            </ul>
+        </div>
+        <div forminput="商品编码">
+            <div class="form-line">{{data.hscode}}</div>
+        </div>
+        <div forminput="商品名称" required>
+            <input type="text" ng-model="data.name" placeholder="商品名称">
+        </div>
+        <div forminput="商品介绍">
+            <textarea style="height:200px" type="text" ng-model="data.intro" placeholder="商品介绍"></textarea>
+        </div>
+        <div forminput="市场价格" required>
+            <input type="text" ng-model="data.market_price" placeholder="市场价格">
+        </div>
+        <div forminput="虚拟商品销量">
+            <input type="text" ng-model="data.virtual_sales" placeholder="虚拟商品销量">
+        </div>
+        <div forminput="状态" required>
+            <ul selectcon ng-model="data.status">
+                <li selectvalue="1">上架</li>
+                <li selectvalue="2">下架</li>
+                <li selectvalue="3">新建</li>
+            </ul>
+        </div>
+        <div forminput="商品规格" required>
+            <table class="table table-bordered table-striped ">
+                <tr>
+                    <th><span class="red">*</span>货号</th>
+                    <th><span class="red">*</span>型号</th>
+                    <th><span class="red">*</span>价格</th>
+                    <th  ng-if="has_cost_permission&&edit">成本价</th>
+                    <th>最大优惠</th>
+                    <th><span class="red">*</span>数量</th>
+                    <th><span class="red">*</span>状态</th>
+                    <th>是否抢购</th>
+                    <th>是否云购</th>
+                    <th> <span class="red">*</span>图片</th>
+                    <th>操作</th>
+                </tr>
+                <tr ng-if="styleStatusSwitch||style.status==1" ng-repeat="(j,style) in data.styles track by $index">
+                    <td>
+                        <input type="text" class="form-control" ng-model="style.item" placeholder="商品货号">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" ng-model="style.name" placeholder="商品型号">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" ng-model="style.price" placeholder="价格">
+                    </td>
+                     <td ng-if="has_cost_permission&&edit">
+                            {{style.cost.cost_price || '未设置'}}
+                     </td>
+                    <td>
+                        <input type="text" class="form-control" ng-model="style.max_discount" placeholder="最大优惠">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" ng-model="style.num" placeholder="数量">
+                    </td>
+                    <td>
+                        <ul selectcon ng-model="style.status">
+                            <li selectvalue="1">正常</li>
+                            <li selectvalue="2">隐藏</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul selectcon ng-model="style.is_secbuy">
+                            <li selectvalue="true">是</li>
+                            <li selectvalue="false">否</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul selectcon ng-model="style.is_cloud">
+                            <li selectvalue="true">是</li>
+                            <li selectvalue="false">否</li>
+                        </ul>
+                    </td>
+                    <td class="mini-img-view">
+                        <div class="img-con img-con-md ng-scope" ng-repeat="(i,image) in style.images">
+                            <img ng-src="{{image.url}}">
+                            <p ng-click="deleteStyleImg(j,i)">×</p>
+                        </div>
+                    </td>
+                    <td>
+                        <div uploadfile nopreview="true" ng-model="style.images" key="image_ids" root="tempStyleImg" multiple="multiple">
+                            <div class="button btn btn-link button" multiple="multiple" ng-file-select ng-file-change="upload($files)">添加附件</div>
+                        </div>
+                        <button type="button" class="btn btn-link" ng-click="updateCost(j)" ng-if="has_cost_permission&&edit">修改成本价</button>
+                        <button type="button" class="btn btn-link" ng-if="!plist[j]" ng-click="deleteRow(j)">删除</button>
+                        <button type="button" class="btn btn-link" ng-if="plist[j]" ng-click="deleteConfirmRow(j)"></button>
+                        <button type="button" class="btn btn-link" ng-if="!$first" ng-click="setP(j,-1)">上移</button>
+                        <button type="button" class="btn btn-link" ng-if="!$last" ng-click="setP(j,1)">下移</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="7">
+                        <button type="button" class="btn btn-default" ng-click="addStyleRow()">添加</button>
+                    </td>
+                    <td colspan="4">
+                        <label>
+                            <input type="checkbox" class="checkbox-inline" ng-model="styleStatusSwitch" /> 显示所有款式
+                        </label>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div forminput="商品图片" required>
+            <div uploadfile ng-model="data.images" key="image_ids" multiple="multiple">
+                <div class="button btn btn-success button" multiple="multiple" ng-file-select ng-file-change="upload($files)">添加附件</div><span class="note">（第一张为商品详情默认图）</span>
+            </div>
+        </div>
+        <div forminput="海报">
+            <div uploadfile ng-model="data.poster" key="poster_id">
+                <div class="button btn btn-success button" ng-file-select ng-file-change="upload($files)">添加附件</div>
+            </div>
+        </div>
+        <div forminput="小海报">
+            <div uploadfile ng-model="data.small_poster" key="small_poster_id">
+                <div class="button btn btn-success button" ng-file-select ng-file-change="upload($files)">添加附件</div>
+            </div>
+        </div>
+        <div forminput="音频">
+            <div uploadfile ng-model="data.audio" key="audio_id">
+                <div class="button btn btn-success button" ng-file-select ng-file-change="upload($files)">添加附件</div>
+            </div>
+        </div>
+        <div forminput="商品详情" con="true">
+            <div class="form-group">
+                <div class="btn btn-primary fr" ng-click="preview()">预览效果</div>
+                <label><span class="red">*</span> 商品详情模板: </label>
+                <ul selectcon ng-model="filter.test" ng-change="search()">
+                    <li selectvalue="">默认</li>
+                </ul>
+            </div>
+            <div class="form-group">
+                <label><span class="red">*</span> 商品参数详情图: </label>
+                <!-- 加载编辑器的容器 -->
+                <div um-Edit></div>
+            </div>
+        </div>
+        <div forminput="运费">
+            <input type="text" ng-model="data.deliver_price" placeholder="运费">
+        </div>
+        <div forminput="限购价格">
+            <input type="text" ng-model="data.limited_buy_price" placeholder="限购价格">
+        </div>
+        <div forminput="限购数量">
+            <input type="text" ng-model="data.limited_buy_num" placeholder="限购数量">
+        </div>
+        <div class="form-group mt20 ">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div ui-modal class="costPop" title="修改成本价" ng-submit="costSubmit()">
+    <label>成本价:</label>
+    <input type="text" class="form-control" ng-model="costData.cost_price" placeholder="成本价">
+</div>

@@ -1,0 +1,95 @@
+<div pagetitle>单页任务列表</div>
+<div goback back-key="{{filter.object_id}}" class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>任务类型:</label>
+        <ul selectcon ng-model="filter.task_type" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="taobao">淘宝商品</li>
+            <li selectvalue="taobaoyao">淘宝药品</li>
+            <li selectvalue="taobaokelinkconvert">淘宝客链转换</li>
+            <li selectvalue="taokedetail">淘宝客报表</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>影响对象类型:</label>
+        <ul selectcon ng-model="filter.object_type" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="good">商城商品</li>
+            <li selectvalue="taokedetail">淘客报表详情</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>状态:</label>
+        <ul selectcon ng-model="filter.status" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="1">等待</li>
+            <li selectvalue="2">进行中</li>
+            <li selectvalue="3">完成</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>结果:</label>
+        <ul selectcon ng-model="filter.is_success" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="true">成功</li>
+            <li selectvalue="false">失败</li>
+        </ul>
+    </div>
+    <div class="form-group navbar-right" role="search">
+        <input type="text" class="form-control" ng-model="filter.keyword" placeholder="原始链接(<20Byte)">
+        <button type="button" class="btn btn-primary" ng-click="search()">搜 索</button>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th >原始链接</th>
+            <th>任务类型</th>
+            <th>影响对象类型</th>
+            <th>状态</th>
+            <th>结果</th>
+            <th>连续失败次数</th>
+            <th>添加时间</th>
+            <th>更新时间</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="task in data">
+            <td>
+                <a ng-href="{{task.url}}" target="_blank">{{task.url}}</a>
+            </td>
+            <td>
+                {{task.task_type |task_type}}
+            </td>
+            <td>
+                {{task.object_type|task_object_type}}
+            </td>
+            <td>
+                {{task.status | processstatus}}
+            </td>
+            <td>
+                <span ng-if="task.error_code" class="btn btn-link" title="{{task.error}}">失败({{task.error_code}})</span>
+                <span ng-if="task.status == 3" class="btn btn-link" title="{{task.result}}">成功</span>
+            </td>
+            <td>
+                {{task.error_count}}
+            </td>
+            <td>
+                {{task.create_time | datetime}}
+            </td>
+            <td>
+                {{task.update_time | datetime}}
+            </td>
+            <td >
+                <a ui-sref="spider/sp_task_info({id:'{{task.id}}'})">详情</a>
+                <button class="btn btn-link" ng-click="retry($index)">重新抓取</button>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>

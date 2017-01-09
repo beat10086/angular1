@@ -1,0 +1,31 @@
+<div pagetitle><span>用户私信</span></div>
+<h1 class="chatmsg">与 {{nick}} 私信对话框</h1>
+<div>
+    <label class="form-line">历史私信: </label>
+        <div class="chat_history">
+            <div ng-if="msg !=undefined" ng-repeat="record in msg.record">
+                <div class="chat_left" ng-if="record.mine">
+                    <p class="time_left">
+                         {{record.send_time}}
+                    </p>
+                    <p class="msg_left">
+                         {{record.content}}
+                    </p>
+               </div>
+                <div class="chat_right" ng-if="!record.mine">
+                    <p class="time_right">
+                         {{record.send_time}}
+                    </p>
+                    <p class="msg_right"> 
+                        {{record.content}}
+                    </p>
+               </div>
+            </div>
+        </div>
+        <label class="form-line">发新私信: </label>
+        <textarea class="form-control send_txt" ng-model="chat.reply" placeholder="私信内容"></textarea>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" ng-click="useMsgSubmit()">发送</button>
+    </div>
+</div>

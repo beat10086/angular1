@@ -1,0 +1,206 @@
+<div pagetitle>话题列表</div>
+<div goback back-key="{{filter.group_id}}" class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>排序:</label>
+        <ul selectcon ng-model="filter.sort" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="create_time_asc">按添加时间顺序</li>
+            <li selectvalue="create_time_desc">按添加时间倒序</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>状态:</label>
+        <ul selectcon ng-model="filter.status" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="0">待审核</li>
+            <li selectvalue="1">审核通过</li>
+            <li selectvalue="2">审核失败</li>
+            <li selectvalue="3">隐藏</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>内外用户:</label>
+        <ul selectcon ng-model="filter.is_internal" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="1">内部</li>
+            <li selectvalue="0">外部</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>是否置顶:</label>
+        <ul selectcon ng-model="filter.is_top" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="true">是</li>
+            <li selectvalue="false">否</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label class="btn btn-primary" ng-if="filter.viewstyle!='view'">
+            <input type="radio" name="viewstyle" value="view" ng-change="search()" ng-model="filter.viewstyle" style="display:none">
+            <span>看帖模式</span>
+        </label>
+        <label class="btn btn-success" ng-if="filter.viewstyle=='view'">
+            <input type="radio" name="viewstyle" value="menage" ng-change="search()" ng-model="filter.viewstyle" style="display:none">
+            <span>表格模式</span>
+        </label>
+    </div>
+    <div class="form-group navbar-right" role="search">
+        <input type="text" class="form-control" ng-model="filter.keyword" placeholder="搜索">
+        <button type="button" class="btn btn-primary" ng-click="search()">搜 索</button>
+        <button type="button" class="btn btn-danger" ng-click="multiCheck.mutiSubmit()">批量删除</button>
+        <a ui-sref="topic/create" class="btn btn-default">创建话题</a>
+    </div>
+</div>
+{{test}}
+<table class="table table-bordered table-striped " ng-class="{viewstyle:filter.viewstyle=='view'}">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>
+                <label class="checkbox-inline">
+                    <input type="checkbox" ng-change="multiCheck.checkAll()" ng-model="checkedAll"><b>选择</b>
+                </label>
+            </th>
+            <th width="200px">标题</th>
+            <th>所属小组</th>
+            <th>总楼数</th>
+            <th>是否置顶</th>
+            <th>是否涉黄</th>
+            <th>创建者</th>
+            <th>创建时间</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="topic in data">
+            <td>
+                <input type="checkbox" value="{{topic.id}}" ng-model="topic.check" ng-click="multiCheck.toggleCheck($index,$event)">
+            </td>
+            <td>
+                <a ui-sref="topic/view({topic_id:'{{topic.id}}'})"> {{topic.title}}</a>
+            </td>
+            <td>
+                <a ui-sref="group/info({id:'{{topic.group_id}}'})">{{topic.group.title}}</a>
+            </td>
+            <td>
+                {{topic.floors}}
+            </td>
+            <td>
+                <label ng-if="filter.viewstyle=='view'">置顶: </label>
+                <ul selectcon ng-model="topic.is_top" ng-change="changeTop($index)">
+                    <li selectvalue="true">是</li>
+                    <li selectvalue="false">否</li>
+                </ul>
+            </td>
+            <td>
+                <label ng-if="filter.viewstyle=='view'">涉黄: </label>
+                <ul selectcon ng-model="topic.is_sexy" ng-change="changeSexy($index)">
+                    <li selectvalue="true">是</li>
+                    <li selectvalue="false">否</li>
+                </ul>
+            </td>
+            <td>
+                <a ui-sref="user/info({id:'{{topic.creator_id}}'})">{{topic.creator|internal}}</a>
+            </td>
+            <td ng-if="filter.viewstyle=='view'">
+                {{topic.content}}
+            </td>
+            <td ng-if="filter.viewstyle=='view'">
+                <div class="topic_img">
+                    <ul class="clear">
+                        <li ng-repeat="image in topic.images" class="fl">
+                            <img ng-src="{{image.url}}">
+                        </li>
+                    </ul>
+                </div>
+            </td>
+            <td>
+                {{topic.create_time | datetime}}
+            </td>
+            <td>
+                <label ng-if="filter.viewstyle=='view'">状态: </label>
+                <ul selectcon ng-model="topic.status" ng-change="changeStatus($index)">
+                    <li selectvalue="0">待审核</li>
+                    <li selectvalue="1">审核通过</li>
+                    <li selectvalue="2">审核失败</li>
+                    <li selectvalue="3">隐藏</li>
+                </ul>
+            </td>
+            <td class="t_bar">
+                <a ui-sref="topic/info({id:'{{topic.id}}'})">详情</a>
+                <button class="btn btn-link" ng-click="changeGroup($index)">移动</button>
+                <button class="btn btn-link" ng-click="publish($index)">发布</button>
+                <button class="btn btn-link" ng-click="reward($index)">打赏Top回复</button>
+                <button class="btn btn-link" ng-click="delete($index)">删除</button>
+                <div class="dropdown">
+                    <button class="btn btn-link dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="true">
+                        推荐
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li role="presentation"><a ng-click="recommendHot($index)">推送部落-热门</a></li>
+                        <!--
+                        <li role="presentation"><a ng-click="recommendHotBanner($index)">部落-热门banner</a></li>
+                        <li role="presentation"><a add-recommend data-type="top_topic" data-object_id="{{topic.id}}" data-object_type="topic" >推荐置顶</a></li>
+                        <li role="presentation"><a add-recommend data-type="good_topic" data-object_id="{{topic.id}}" data-object_type="topic">推荐商城体验报告</a></li>
+                        <li role="presentation"><a add-recommend data-type="ad_group_index" data-object_id="{{topic.id}}" data-object_type="topic">推荐广场Banner</a></li>
+                        -->
+                        <li role="presentation"><a add-recommend data-type="novice_must_read" data-object_id="{{topic.id}}" data-object_type="topic">推荐新手必读</a></li>
+                        <li role="presentation"><a add-recommend data-type="today_headline" data-object_id="{{topic.id}}" data-object_type="topic">推荐今日头条</a></li>
+                    </ul>
+                </div>
+                <a ui-sref="topic/view({topic_id:'{{topic.id}}'})">查看帖子</a>
+                <!--<button class="btn btn-link" ng-click="topicMessage($index)">推送热门话题</button>-->
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>
+<div ui-modal class="sendAlbum" title="推送热门话题" ng-submit="sendSubmit()">
+    <div>
+        <label>推送给：</label>
+        <label class="checkbox-inline">
+            <input type="radio" ng-model="send.target" value="all">所有人</label>
+        <label class="checkbox-inline">
+            <input type="radio" ng-model="send.target" value="specified">指定用户</label>
+    </div>
+    <div ng-if="send.target=='specified'">
+        <br>
+        <label>老师粉丝：</label>
+        <div realtime trimclear="true" ng-model="send.star_id" search-type="star">
+            <input type="text" ng-model="send.star_name" placeholder="搜索老师名称以选择老师">
+        </div>
+    </div>
+    <div ng-if="send.target=='specified'">
+        <br>
+        <label>小组成员:</label>
+        <div realtime trimclear="true" ng-model="send.group_id" search-type="group">
+            <input type="text" ng-model="send.group_name" placeholder="搜索小组名称以选择小组">
+        </div>
+    </div>
+</div>
+<div ui-modal class="changeGrup" title="移动话题" ng-submit="changeGrupSubmit()">
+    <label>小组:</label>
+    <div realtime trimclear="true" ng-model="change.group_id" search-type="group">
+        <input type="text" ng-model="change.group_name" placeholder="搜索小组名称以选择小组">
+    </div>
+</div>
+<div ui-modal class="rewardPop" title="打赏话题" ng-submit="rewardSubmit()">
+    <label>金币数:</label>
+    <input type="number" class="form-control" ng-model="rewardData.amount" placeholder="金币数(1~10)">
+    <br>
+    <label>前多少楼:</label>
+    <input type="text" class="form-control" ng-model="rewardData.limit" placeholder="前多少楼">
+</div>
+<div ui-modal class="recommendPop" title="推荐热门" ng-submit="recommendSubmit()">
+    <label>金币数:</label>
+    <input type="number" class="form-control" ng-model="recommendData.reward_coins" placeholder="金币数(1~100)">
+</div>
+<div ui-modal class="recommendPopBanner" title="推荐热门Banner" ng-submit="recommendSubmit()">
+    <label>展示文字:</label>
+    <input type="text" class="form-control" ng-model="recommendData.show_words" placeholder="输入展示文字">
+</div>

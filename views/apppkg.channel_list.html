@@ -1,0 +1,61 @@
+<div pagetitle>渠道列表</div>
+<div goback back-key class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>状态:</label>
+        <ul selectcon ng-model="filter.status" ng-change="search()">
+            <li selectvalue="1">正常</li>
+            <li selectvalue="2">禁用</li>
+        </ul>
+    </div>
+    <div class="form-group navbar-right" role="search">
+        <a ui-sref="apppkg/channel_add" class="btn btn-default">添加渠道</a>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>渠道名</th>
+            <th>渠道描述</th>
+            <th>下载二维码</th>
+            <th>安卓包下载地址</th>
+            <th>iOS包下载地址</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="channel in data">
+            <td>{{channel.name}}
+            </td>
+            <td>
+                {{channel.desc }}
+            </td>
+            <td>
+                <a class="img-con" ng-href="{{channel.package_url}}">
+                    <img ng-src="http://api.xjbuluo.com/util/qrcode?text={{channel.package_url}}">
+                </a>
+            </td>
+            <td>
+                <a ng-href="{{channel.android_package_url}}">{{channel.android_package_url}}</a>
+            </td>
+            <td>
+                <a ng-href="{{channel.ios_package_url}}">{{channel.ios_package_url}}</a>
+            </td>
+            <td>
+                <ul selectcon ng-model="channel.status" ng-change="changeStatus($index)">
+                    <li selectvalue="1">正常</li>
+                    <li selectvalue="2">禁用</li>
+                </ul>
+            </td>
+            <td class="t_bar">
+                <a ui-sref="apppkg/channel_info({name:'{{channel.name}}'})">详情</a>
+                <button class="btn btn-link" ng-click="delete($index)">删除</button>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>

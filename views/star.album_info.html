@@ -1,0 +1,41 @@
+<div pagetitle>
+    <span ng-if="edit">专辑详情</span>
+    <span ng-if="!edit">添加专辑</span>
+</div>
+<div goback>
+     <span ng-if="edit">
+    <button class="btn btn-danger" ng-click="delete()"><span class="glyphicon glyphicon-trash"></span> 删除</button>
+    <a class="btn btn-default" ng-href="#/star/album_works?album_id={{data.id}}">查看作品</a>
+    <button class="btn btn-default" add-recommend data-type="hot_album" data-object_id="{{data.id}}" data-object_type="album" >推荐热门</button>
+    </span>
+</div>
+<div class="form-content">
+    <form class="form-horizontal" role="form" ng-submit="submit()">
+
+        <div forminput="专辑名称" required>
+            <input type="text" ng-model="data.name" placeholder="专辑名称">
+        </div>
+        <div forminput="专辑封面" required>
+            <div uploadfile ng-model="data.cover" key="cover_id">
+                <div class="button btn btn-success button" ng-file-select ng-file-change="upload($files)">上传封面</div>
+            </div>
+        </div>
+        <div forminput="专辑海报" >
+            <div uploadfile ng-model="data.poster" key="poster_id">
+                <div class="button btn btn-success button" ng-file-select ng-file-change="upload($files)">上传海报</div>
+            </div>
+        </div>
+        <div forminput="状态">
+            <ul selectcon ng-model="data.status">
+                <li selectvalue="1">正常</li>
+                <li selectvalue="2">隐藏</li>
+            </ul>
+        </div>
+        <div class="form-group mt20 ">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

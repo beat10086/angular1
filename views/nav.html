@@ -1,0 +1,10 @@
+<div class="sidenav" ng-controller="menuCtrl">
+    <div ng-repeat="group in menulist" title="{{group.name}}"  class="nav-group" ng-mouseenter="navShow($index)" ng-mouseleave="navHide($index)">
+            <div class="sidenav-title" ng-click="navToggle($index)" ><i class="glyphicon glyphicon-{{group.icon}}"></i> <span>{{group.name}}</span></div>
+            <ul ui-sref-active="active" >
+                <li ui-sref-active="active" ng-repeat="item in group.sublist"  >
+                        <a ui-sref="{{group.path}}/{{item.path}}({{item.params}})" ui-sref-opts="{reload: true,inherit :false}">{{item.name}}</a>
+                </li>
+            </ul>
+    </div>
+</div>

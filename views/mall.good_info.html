@@ -1,0 +1,79 @@
+<div pagetitle>
+    <span ng-if="edit">类别详情</span>
+    <span ng-if="!edit">添加类别</span>
+</div>
+<div goback>
+    <span ng-if="edit">
+    </span>
+</div>
+<div class="form-content">
+    <form class="form-horizontal" role="form" ng-submit="submit()">
+        <div forminput="所属导航" required>
+            <ul selectcon ng-model="data.navigation_id" >
+                <li selectvalue="{{nav.id}}" ng-repeat="nav in filternav">{{nav.name}}</li>
+            </ul>
+        </div>
+        <div forminput="所属类别" required>
+            <ul selectcon ng-model="data.category_id" >
+                <li selectvalue="{{cate.id}}" ng-repeat="cate in filtercate">{{cate.name}}</li>
+            </ul>
+        </div>
+        <div forminput="平台" required>
+            <ul selectcon ng-model="data.platform" >
+                <li selectvalue="1">淘宝</li>
+                <li selectvalue="2">内部商城</li>
+                
+            </ul>
+        </div>
+        <div forminput="商品编码" ng-if="edit">
+              <div class="form-line">{{data.hscode}}</div>
+        </div>
+        <div forminput="商品名称" required>
+            <input type="text" ng-model="data.name" placeholder="商品名称">
+        </div>
+         <div forminput="商品链接" required>
+            <input type="text" ng-model="data.platattach.details_url" placeholder="商品链接">
+        </div>
+         <div forminput="淘宝客链接">
+            <input type="text" ng-model="data.platattach.taoke_url" placeholder="淘宝客链接">
+        </div>
+        <div forminput="市场价格" required >
+            <input type="text" ng-model="data.market_price" placeholder="市场价格">
+        </div>
+        <div forminput="折后价格"  required>
+            <input type="text" ng-model="data.platattach.price" placeholder="折后价格">
+        </div>
+        <div forminput="月销量"  >
+            <input type="text" ng-model="data.month_sales" placeholder="月销量">
+        </div>
+        <div forminput="商品介绍"  >
+            <textarea style="height:200px"  type="text" ng-model="data.intro" placeholder="商品介绍"></textarea>
+        </div>
+        <div forminput="商家名称"  required>
+            <input type="text" ng-model="data.merchant" placeholder="商家名称">
+        </div>
+        <div forminput="状态" required>
+            <ul selectcon ng-model="data.status">
+                <li selectvalue="1">上架</li>
+                <li selectvalue="2" ng-if="edit">下架</li>
+                <li selectvalue="3" >新建</li>
+            </ul>
+        </div>
+        <div forminput="图片" required>
+            <div uploadfile ng-model="data.images" key="image_ids" multiple="multiple">
+                <div class="button btn btn-success button" multiple="multiple" ng-file-select ng-file-change="upload($files)">添加附件</div>
+            </div>
+        </div>
+        <div forminput="海报">
+            <div uploadfile ng-model="data.poster" key="poster_id">
+                <div class="button btn btn-success button" ng-file-select ng-file-change="upload($files)">添加附件</div>
+            </div>
+        </div>
+        <div class="form-group mt20 ">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

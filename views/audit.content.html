@@ -1,0 +1,65 @@
+<div pagetitle>重复内容</div>
+<div goback back-key="filter.audit_id" class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>审核类型:</label>
+        <ul selectcon ng-model="filter.audit_type" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="1">话题标题</li>
+            <li selectvalue="2">话题内容</li>
+            <li selectvalue="3">回帖内容</li>
+            <li selectvalue="4">商品评论</li>
+            <li selectvalue="5">小喇叭</li>
+            <li selectvalue="6">私信</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <button ng-if="filter.user_id" class="btn btn-success" ui-sref="audit/content()" ui-sref-opts="{reload: true,inherit :false}">返回全部</button>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>审核类型</th>
+            <th>发言内容</th>
+            <th>被重复次数</th>
+            <th>举报时间</th>
+            <th>发言用户</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td>
+                {{item.audit_type | audit_type}}
+            </td>
+            <td>
+                {{item.content }}
+            </td>
+            <td>
+                {{item.count||0}}次
+            </td>
+            <td> {{item.create_time | datetime}}</td>
+            <td>
+                <a ui-sref="user/info({id:'{{item.user_id}}'})">{{item.user.nick||item.user.username}}</a>
+            </td>
+            <td class="t_bar">
+                <button class="btn btn-link" ng-click="delete($index)">删除</button>
+                <a ui-sref="audit/content({user_id:'{{item.user_id}}'})" ui-sref-opts="{reload: true,inherit :false}">此用户相关</a>
+                <div ng-if="(item.audit_type==1||item.audit_type==2)&&item.object" >
+                    <button class="btn btn-link" ng-click="deleteTopic($index)">删除话题</button>
+                    <a  ui-sref="topic/info({id:'{{item.object_id}}'})">查看话题</a>
+                </div>
+                <div ng-if="item.audit_type==3&&item.object" >
+                    <button class="btn btn-link" ng-click="deletePost($index)">删除帖子</button>
+                    <a  ui-sref="topic/view({topic_id:'{{item.object.topic_id}}'})">回帖详情</a>
+                </div>
+
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>

@@ -1,0 +1,80 @@
+<div pagetitle>
+    <span ng-if="edit">类别详情</span>
+    <span ng-if="!edit">添加类别</span>
+</div>
+<div goback>
+    <span ng-if="edit">
+    </span>
+</div>
+<div class="form-content">
+    <form class="form-horizontal" role="form" ng-submit="submit()">
+        <div forminput="活动时间" required>
+            <div class="row">
+                <div class="col-sm-4">
+                    <input type="text" dateselect min-view="0" format="yyyy-mm-dd hh:ii:00" class="form-control" ng-model="data.start_time " placeholder="请选择">
+                </div>
+                <div class="col-sm-1">
+                    <div class="form-line">
+                        <label>至</label>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <input type="text" dateselect min-view="0" format="yyyy-mm-dd hh:ii:00" class="form-control" ng-model="data.end_time" placeholder="请选择">
+                </div>
+            </div>
+        </div>
+        <div forminput="活动图片" required>
+            <div uploadfile ng-model="data.banner" key="banner_id" >
+                <div class="button btn btn-success button"  ng-file-select ng-file-change="upload($files)">添加附件</div>
+            </div>
+        </div>
+        <div forminput="状态" >
+            <ul selectcon ng-model="data.status">
+                <li selectvalue="1">正常</li>
+                <li selectvalue="2">隐藏</li>
+            </ul>
+        </div>
+        <div forminput="活动商品" required con="true">
+            <div class="form-group">
+                <div class="col-sm-12" style="margin-top:10px">
+                    <div realtime ng-model="data.good_ids"  multiple="multiple" link-obj="goods" search-type="good">
+                        <input type="text"  ng-model="data.creator_username" placeholder="搜索商品以添加">
+                    </div>
+                </div>
+            </div>
+            <table class="table table-bordered table-striped ">
+                <tr>
+                    <th>商品名称</th>
+                    <th>商品图片</th>
+                    <th>价格</th>
+                    <th>数量</th>
+                    <th>操作</th>
+                </tr>
+                <tr ng-repeat="(j,good) in data.goods track by $index">
+                    <td>
+                        <a class="cur" ng-click="editGood(j)"  >{{good.name}}</a>
+                    </td>
+                    <td class="mini-img-view">
+                        <div class="img-con img-con-md ng-scope" ng-repeat="(i,image) in good.images">
+                            <img ng-src="{{image.url}}">
+                        </div>
+                    </td>
+                    <td>
+                        {{good.styles | stylesprice}}
+                    </td>
+                    <td >{{good.styles | stylesnum }}</td>
+                    <td>
+                        <button type="button" class="btn btn-link" ng-click="editGood(j)">编辑</button>
+                        <button type="button" class="btn btn-link" ng-click="deleteRow(j)">删除</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="form-group mt20 ">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

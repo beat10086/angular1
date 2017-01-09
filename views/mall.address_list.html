@@ -1,0 +1,40 @@
+<div pagetitle>地址列表</div>
+<div goback class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group navbar-right" role="search">
+        <div realtime trimclear="true" ng-model="filter.user_id" search-type="user" class="inline-block">
+            <input type="text" ng-model="filter.keyword" placeholder="用户">
+        </div>
+        <button type="button" class="btn btn-primary" ng-click="search()">搜 索</button>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>地址</th>
+            <th>收货人</th>
+            <th>手机</th>
+            <th>是否默认</th>
+            <th>创建时间</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td>
+                {{item.city}} {{item.detailed_address}}
+            </td>
+            <td>
+                {{item.consignee}}
+            </td>
+            <td>
+                {{item.mobile}}
+            </td>
+            <td>{{item.is_default | booleanfilter}}</td>
+            <td>{{item.create_time | datetime }}</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>

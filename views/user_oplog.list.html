@@ -1,0 +1,56 @@
+<div pagetitle>用户操作日志</div>
+<div goback back-key class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group navbar-right" role="search">
+        <input type="text" class="form-control" ng-model="filter.keyword" placeholder="关键字">
+        <button type="button" class="btn btn-primary" ng-click="search()">搜 索</button>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>操作员</th>
+            <th>被操作用户</th>
+            <th>事件</th>
+            <th>帖子标题</th>
+            <th>帖子内容</th>
+            <th>删除原因</th>
+            <th>操作时间</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td>
+                <a ui-sref="user/info({id:'{{item.user_id}}'})">{{item.user_name.nick}}</a>
+            </td>
+            <td>
+                <a ui-sref="user/info({id:'{{item.op_user}}'})">{{item.op_user_name.nick}}</a>
+            </td>
+            <td>
+                {{item.event}}
+            </td>
+            <td>
+                <a ui-sref="topic/info({id:'{{item.topic_id}}'})">{{item.title}}</a>
+            </td>
+            <td>
+                <a ng-if ="item.flag==1" ui-sref="topic/info({id:'{{item.topic_id}}'})">{{item.content}}</a>
+                <a ng-if ="item.flag==2" ui-sref="post/info({id:'{{item.post_id}}'})">{{item.content}}</a>
+            </td>
+            <td>
+                {{item.reason}}
+            </td>
+            <td> {{item.create_time | datetime}}</td>
+            <td>
+                <span ng-if="!item.flag==false">
+                <button class="btn btn-link" ng-click="recovery($index)">恢复操作</button>
+                <button class="btn btn-link" ng-click="delete($index)">彻底删除</button>
+                </span>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>

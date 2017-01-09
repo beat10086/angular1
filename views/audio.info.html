@@ -1,0 +1,93 @@
+<div pagetitle>
+    <span ng-if="edit">音频栏目详情</span>
+    <span ng-if="!edit">创建音频栏目</span>
+</div>
+<div goback></div>
+<div class="form-content">
+    <form class="form-horizontal" role="form" ng-submit="submit()">
+        <div forminput="音频标题" required>
+            <input type="text" ng-model="data.title" ng-change="drawTitle()" placeholder="音频标题">
+        </div>
+<!--         <div ng-show="data.title">
+            <div forminput="">
+                <div class="row">
+                    <div class="col-sm-3">
+                        图片宽度:
+                        <input type="number" ng-model="canvas.width" ng-change="drawTitle(true)">
+                    </div>
+                    <div class="col-sm-3">
+                        图片左距离:
+                        <input type="number" ng-model="canvas.left" ng-change="drawTitle(true)">
+                    </div>
+                    <div class="col-sm-3">
+                        字体大小:
+                        <input type="number" ng-model="canvas.font_size" ng-change="drawTitle()">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-2 audioCon">
+                <canvas id="audioTitle" height="36px" style="display:none"></canvas>
+                <img class="audioTitle" ng-src="{{titleImg}}" alt="">
+                <div class="audioVoice"></div>
+                <div class="audioPlay"></div>
+                <div id="audioBanner">
+                    <img ng-src="{{data.banner.url||data.banner[0].url}}">
+                </div>
+            </div>
+            <div class="col-sm-10 col-sm-offset-2" style="position:relative;z-index:1;">(右键上方标题保存到本地,再上传到电台标题)</div>
+        </div>
+        <div forminput="电台banner图" required>
+            <div uploadfile ng-model="data.banner" key="banner_id">
+                <div class="button btn btn-success button" ng-file-select ng-file-change="upload($files)">添加附件</div>
+            </div>
+        </div>
+        <div forminput="电台标题图" required class="long-img-con">
+            <div uploadfile ng-model="data.banner_words" key="banner_words_id">
+                <div class="button btn btn-success button" ng-file-select ng-file-change="upload($files)">添加附件</div>
+            </div>
+        </div>
+ -->        <div forminput="开始时间" required>
+            <input type="text" dateselect format="yyyy-mm-dd hh:ii:00" min-view="0" ng-model="data.start_time" placeholder="开始时间">
+        </div>
+        <div forminput="期数" ng-if="edit">
+            <input type="number" ng-model="data.stage_no" placeholder="期数">
+        </div>
+        <div forminput="音频文件(mp3格式)" required>
+            <div uploadfile ng-model="data.audio" key="audio_id">
+                <div class="button btn btn-success button" ng-file-select ng-file-change="upload($files)">添加附件</div>
+            </div>
+        </div>
+        <div forminput="音频图片" required>
+            <div uploadfile ng-model="data.image" key="image_id">
+                <div class="button btn btn-success button" ng-file-select ng-file-change="upload($files)">添加附件</div>
+            </div>
+        </div>
+        <div forminput="话题标题" ng-if="!edit">
+            <input type="text" ng-model="data.topic_title" ng-change="drawTitle()" placeholder="{{data.title}}">
+        </div>
+        <div forminput="话题用户" required ng-if="!edit">
+            <div realtime trimclear="true" ng-model="data.user_id" search-type="user">
+                <input type="text" class="form-control"  placeholder="v">
+            </div>
+        </div>
+        <div forminput="话题内容" ng-if="!edit">
+            <textarea style="height:300px" type="text" ng-model="data.content" placeholder="话题内容"></textarea>
+        </div>
+        <div forminput="话题图片" ng-if="!edit">
+            <div uploadfile ng-model="data.images" key="image_ids">
+                <div class="button btn btn-success button" ng-file-select ng-file-change="upload($files)">添加附件</div>
+            </div>
+        </div>
+        <div forminput="关联话题" ng-if="edit">
+            <div class="form-line">
+                <a ng-href="#/topic/info/{{data.topic_id}}">{{data.title}}</a>
+            </div>
+        </div>
+        <div class="form-group mt20 ">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

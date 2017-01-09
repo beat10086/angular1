@@ -1,0 +1,82 @@
+<div pagetitle>推荐列表</div>
+<div goback back-key class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>位置</th>
+             <th ng-if="hide._type">类型</th>
+            <th ng-if="!hide.title">名称</th>
+            <th ng-if="hide._show_words">展现文字</th>
+            <th ng-if="!hide.img">图像</th>
+            <th ng-if="!hide.intro" width="280">简介</th>
+            <th ng-if="!hide.poster">海报</th>
+            <th>推荐时间</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td>
+                {{item.position}}
+            </td>
+             <td ng-if="hide._type">
+                {{item.object_type|objecttype}}
+            </td>
+            <td ng-if="!hide.title">
+                <a ng-if="item.object_type=='album'" ui-sref="star/album_info({id:'{{item.object_id}}'})">{{item.object.title||item.object.names.join(',')||item.object.nick||item.object.username||item.object.name}}</a>
+                 <a  ng-if="item.object_type=='cloud'" ui-sref="{{item.object_type}}/info({good_id:'{{item.object_id}}',cloud_num:'{{item.object.cloud_num}}'})">{{item.object.name}}</a>
+                 <a  ng-if="item.object_type!='album'&&item.object_type!='cloud'" ui-sref="{{item.object_type}}/info({id:'{{item.object_id}}'})">{{item.object.title||item.object.names.join(',')||item.object.nick||item.object.username||item.object.name}}</a>
+            </td>
+            <td ng-if="hide._show_words">
+                {{item.show_words}}
+            </td>
+            <td  ng-if="!hide.img" >
+                <div ng-if="item.object.avatars" class="img-con" facepp image-id="{{item.object.avatars[0].id}}" item-ids="{{item.object_id}}">
+                    <img ng-src="{{item.object.avatars[0].url}}">
+                </div>
+                <div  ng-if="item.object.avatar" class="img-con">
+                    <img ng-src="{{item.object.avatar.url}}">
+                </div>
+                <div  ng-if="item.object.image" class="img-con">
+                    <img ng-src="{{item.object.image.url}}">
+                </div>
+                <div  ng-if="item.object.logo" class="img-con">
+                    <img ng-src="{{item.object.logo.url}}">
+                </div>
+                 <div  ng-if="item.object.cover" class="img-con">
+                    <img ng-src="{{item.object.cover.url}}">
+                </div>
+            </td>
+            <td ng-if="!hide.intro">
+                {{item.object.intro}}
+            </td>
+            <td ng-if="!hide.poster">
+                <div class="img-con-poster">
+                    <img ng-src="{{item.object.poster.url}}">
+                </div>
+            </td>
+            <td>
+                {{item.create_time | datetime}}
+            </td>
+            <td class="t_bar">
+                <a  ng-if="item.object_type!='album'&&item.object_type!='cloud'" ui-sref="{{item.object_type}}/info({id:'{{item.object_id}}'})">详情</a>
+                <a  ng-if="item.object_type=='cloud'" ui-sref="{{item.object_type}}/info({good_id:'{{item.object_id}}',cloud_num:'{{item.object.cloud_num}}'})">详情</a>
+                <a ng-if="item.object_type=='album'" ui-sref="star/album_info({id:'{{item.object_id}}'})">详情</a>
+                <button class="btn btn-link" delete-recommend data-type="{{filter.type}}" data-object_id="{{item.object_id}}">取消推荐</button>
+                <button class="btn btn-link" ng-click="editShowWord($index)" ng-if="hide._show_words">修改展现文字</button>
+                <div positions="recommend" position-now="{{item.position}}" data-type="{{filter.type}}" data-object_id="{{item.object_id}}" data-object_type="{{item.object_type}}" ></div>
+
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>
+<div ui-modal class="showWordPop" title="修改展现文字" ng-submit="showWordSubmit()">
+    <label>展现文字:</label>
+    <input type="text" class="form-control" ng-model="showWordData.show_words" placeholder="修改展现文字">
+</div>

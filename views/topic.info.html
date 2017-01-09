@@ -1,0 +1,115 @@
+<div pagetitle>
+    <span ng-if="edit">话题详情</span>
+    <span ng-if="!edit">创建话题</span>
+</div>
+<div goback>
+    <span ng-if="edit">
+    <button class="btn btn-danger" ng-click="delete()"><span class="glyphicon glyphicon-trash"></span> 删除</button>
+    <!-- <a class="btn btn-default" ng-href="#/star/album_works?album_id={{data.id}}">查看帖子</a> -->
+    <a class="btn btn-default" ng-href="#/topic/view/{{data.id}}">查看帖子</a>
+    <button class="btn btn-default" ng-click="changeGroup()">移动</button>
+    <div class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+            推荐
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+            <li role="presentation"><a add-recommend data-type="top_topic" data-object_id="{{data.id}}" data-object_type="topic" >推荐置顶</a></li>
+            <li role="presentation"><a ng-click="recommendHot()">推荐热门</a></li>
+            <!-- <li role="presentation"><a add-recommend data-type="hot_topic" data-object_id="{{data.id}}" data-object_type="topic">推荐热门</a></li> -->
+            <li role="presentation"><a add-recommend data-type="good_topic" data-object_id="{{data.id}}" data-object_type="topic">推荐商城体验报告</a></li>
+            <li role="presentation"><a add-recommend data-type="ad_group_index" data-object_id="{{data.id}}" data-object_type="topic">推荐广场Banner</a></li>
+            <li role="presentation"><a add-recommend data-type="novice_must_read" data-object_id="{{data.id}}" data-object_type="topic">推荐新手必读</a></li>
+            <li role="presentation"><a add-recommend data-type="today_headline" data-object_id="{{data.id}}" data-object_type="topic">推荐今日头条</a></li>
+        </ul>
+    </div>
+    </span>
+</div>
+<div class="form-content">
+    <form class="form-horizontal" role="form" ng-submit="submit()">
+        <div forminput="标题" required>
+            <input type="text" ng-model="data.title" placeholder="小组标题">
+        </div>
+        <div forminput="创建者" required ng-if="!edit">
+            <div realtime ng-model="data.creator_username" save-key="username" link-obj="creator" search-type="user">
+                <input type="text"   placeholder="搜索用户以选择创建者">
+            </div>
+        </div>
+        <div forminput="创建者" required ng-if="edit">
+            <div class="form-line">{{data.creator.username}}</div>
+        </div>
+        <div forminput="所属小组" required ng-if="!edit">
+            <div realtime ng-model="data.group_id" link-obj="group" search-type="group">
+                <input type="text" ng-model="data.group.title"  placeholder="搜索小组以添加小组">
+            </div>
+        </div>
+        <div forminput="所属小组" required ng-if="edit">
+            <div class="form-line">{{data.group.title}}</div>
+        </div>
+        <div forminput="关联商品"  >
+            <div realtime ng-model="data.good_id" link-obj="good" search-type="good">
+                <input type="text" ng-model="data.good.name"  placeholder="搜索商品添加">
+            </div>
+        </div>
+        <div forminput="是否云购">
+            <ul selectcon ng-model="data.is_cloud">
+                <li selectvalue="true">是</li>
+                <li selectvalue="false">否</li>
+            </ul>
+        </div>
+        <div forminput="海报图片">
+            <div uploadfile ng-model="data.poster" key="poster_id">
+                <div class="button btn btn-success button" ng-file-select ng-file-change="upload($files)">添加附件</div>
+            </div>
+        </div>
+        <div forminput="帖子内容" required>
+            <textarea style="height:300px" ng-model="data.content" placeholder="帖子内容，长度范围2到1000" rows="3"></textarea>
+        </div>
+        <div forminput="帖子图片">
+            <div uploadfile ng-model="data.images" multiple="multiple" key="image_ids" data-is_watermark="true">
+                <div class="button btn btn-success button" multiple="multiple" ng-file-select ng-file-change="upload($files)">添加附件</div>
+            </div>
+        </div>
+        <div forminput="状态">
+            <ul selectcon ng-model="data.status">
+                <li selectvalue="0">待审核</li>
+                <li selectvalue="1">审核通过</li>
+                <li selectvalue="2">审核失败</li>
+                <li selectvalue="3">隐藏</li>
+            </ul>
+        </div>
+        <div class="form-group mt20 ">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal fade changeGrup">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">移动话题</h4>
+            </div>
+            <div class="modal-body">
+                <label>小组:</label>
+                <div realtime trimclear="true" ng-model="change.group_id" search-type="group">
+                    <input type="text" ng-model="change.group_name" placeholder="搜索小组名称以选择小组">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" ng-click="changeGrupSubmit()">确认</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<div ui-modal class="recommendPop" title="推荐热门" ng-submit="recommendSubmit()">
+    <label>金币数:</label>
+    <input type="number" class="form-control" ng-model="recommendData.reward_coins" placeholder="金币数(1~100)">
+</div>

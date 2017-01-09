@@ -1,0 +1,95 @@
+<div pagetitle>人脸识别记录</div>
+<div goback back-key class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>排序:</label>
+        <ul selectcon ng-model="filter.sort" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="detect_time_asc">按检测时间顺序</li>
+            <li selectvalue="detect_time_desc">按检测时间倒序</li>
+            <li selectvalue="update_time_asc">按更新时间升序</li>
+            <li selectvalue="update_time_desc">按更新时间倒序</li>
+        </ul>
+        <label>是否为空:</label>
+        <ul selectcon ng-model="filter.is_empty" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="true">是</li>
+            <li selectvalue="false">否</li>
+        </ul>
+    </div>
+    <div class="form-group navbar-right" role="search">
+        <div realtime trimclear="true" ng-model="filter.user_id" search-type="user" class="inline-block">
+            <input type="text" ng-model="filter.keyword" placeholder="提交请求的用户">
+        </div>
+        <button type="button" class="btn btn-primary" ng-click="search()">搜 索</button>
+    </div>
+</div>
+<table class="table table-bordered table-striped top_align">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th rowspan="2">人脸图片</th>
+            <th colspan="3">识别结果:</th>
+            <th rowspan="2">耗时</th>
+            <th rowspan="2">用户</th>
+            <th rowspan="2">评分</th>
+            <th rowspan="2">请求时间</th>
+        </tr>
+        <tr>
+            <th>老师图片</th>
+            <th>人脸头像</th>
+            <th>匹配程度 </th>
+        </tr>
+    </thead>
+    <tbody ng-repeat="recognize in data">
+        <tr>
+            <td rowspan="{{recognize.results.length}}">
+                <div class="img-con">
+                    <img ng-src="{{recognize.image.url}}">
+                </div>
+            </td>
+            <td colspan="3" ng-if="!recognize.results.length">
+                (无识别结果)
+            </td>
+            <td ng-if="recognize.results.length">
+                <div class="img-con " facepp image-id="{{recognize.results[0].star.avatar.id}}" star-ids="{{recognize.results[0].star_id}}">
+                    <img ng-src="{{recognize.results[0].star.avatar.url}}">
+                </div>
+            </td>
+            <td ng-if="recognize.results.length">
+                <div class="img-con ">
+                    <img ng-src="{{recognize.results[0].face.image.url}}">
+                </div>
+            </td>
+            <td ng-if="recognize.results.length">{{recognize.results[0].score.toFixed(2)}}</td>
+            <td rowspan="{{recognize.results.length}}">
+                {{recognize.duration/1000}}秒
+            </td>
+            <td rowspan="{{recognize.results.length}}">
+                <a ui-sref="user/info({id:'{{recognize.user_id}}'})">{{recognize.user.nick||recognize.user.username}}</a>
+            </td>
+            <td rowspan="{{recognize.results.length}}">
+                {{recognize.score}}
+            </td>
+            <td rowspan="{{recognize.results.length}}">
+                {{recognize.create_time | datetime}}
+            </td>
+        </tr>
+        <tr ng-repeat="result in recognize.results" ng-if="!$first">
+            <td>
+                <div class="img-con " facepp image-id="{{result.star.avatar.id}}" star-ids="{{result.star_id}}">
+                    <img ng-src="{{result.star.avatar.url}}">
+                </div>
+            </td>
+            <td>
+                <div class="img-con ">
+                    <img ng-src="{{result.face.image.url}}">
+                </div>
+            </td>
+            <td>{{result.score.toFixed(2)}}</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+    <div nodata></div>

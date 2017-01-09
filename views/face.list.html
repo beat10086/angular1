@@ -1,0 +1,58 @@
+<div pagetitle>人脸列表</div>
+    <div goback back-key class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+        <div class="form-group">
+            <label>排序:</label>
+            <ul selectcon ng-model="filter.sort" ng-change="search()">
+                <li selectvalue="" >默认</li>
+                <li selectvalue="detect_time_asc">按检测时间顺序</li>
+                <li selectvalue="detect_time_desc">按检测时间倒序</li>
+                <li selectvalue="update_time_asc">按更新时间升序</li>
+                <li selectvalue="update_time_desc">按更新时间倒序</li>
+            </ul>
+        </div>
+        <div class="form-group navbar-right" role="search">
+        </div>
+    </div>
+    <table class="table table-bordered table-striped ">
+        <thead>
+            <tr pages page-type="mini"></tr>
+            <tr>
+                <th>ID</th>
+                <th>老师名称</th>
+                <th >人脸图片</th>
+                <th >来源图片</th>
+                <th>检测时间</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="face in data">
+                <td>
+                    {{face.id}}
+                </td>
+                <td>
+                    <a ui-sref="star/info({id:'{{face.star_id}}'})" title="查看老师">{{face.star.names}}</a>
+                </td>
+                <td>
+                    <div class="img-con">
+                        <img ng-src="{{face.image.url}}">
+                    </div>
+                </td>
+                <td>
+                    <div class="img-con" facepp image-id="{{face.parent_image.id}}" star-ids="{{face.star_id}}">
+                        <img ng-src="{{face.parent_image.url}}">
+                    </div>
+                </td>
+                <td>
+                    {{face.create_time | datetime}}
+                </td>
+                <td class="">
+                    <button class="btn btn-link" ng-click="delete($index)">删除</button>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr pages></tr>
+        </tfoot>
+    </table>
+    <div nodata></div>

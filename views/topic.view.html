@@ -1,0 +1,82 @@
+<div pagetitle>
+    <span>查看帖子</span>
+</div>
+<div goback>
+    <span>
+     <button class="btn btn-danger" ng-click="delete()"><span class="glyphicon glyphicon-trash"></span> 删除</button>
+    <a class="btn btn-default fr" ng-click="replayFocus()">回复话题</a>
+    </span>
+</div>
+<div class="topic-detail p20">
+    <a ui-sref="group/info({id:'{{topic.group.id}}'})" ng-if="topic" class="highlight">【{{topic.group.title}}】</a> {{topic.title}}
+</div>
+<ul class=" normal_list topic_list">
+    <li ng-repeat="post in data" class="list_item">
+        <div class=" wrap_in li_con">
+            <div class="topic_con clear">
+                <div class="topic_left">
+                    <div class="user_info_con">
+                        <a ui-sref="user/info({id:'{{post.publisher_id}}'})" title="查看用户信息">
+                            <div class="user_img_box">
+                                <div class="user_img_cover">
+                                    <img ng-src="{{post.publisher.avatar.url}}" alt="">
+                                </div>
+                            </div>
+                            <div class="user_title highlight">{{post.publisher|internal}}</div>
+                        </a>
+                    </div>
+                </div>
+                <div class="topic_right">
+                    <p class="replied_floor" ng-if="post.replied_floor">
+                        <span class="notes">回复<span>{{post.replied_floor}}楼</span></span>
+                    </p>
+                    <p class="arcitle_content">
+                        <pre style="background: #fff;border:none;padding:0;font-size: 14px;font-family: microsoft yahei">{{post.content }}</pre>
+                    </p>
+                    <div class="topic_img">
+                        <ul class="clear">
+                            <li ng-repeat="image in post.images" class="fl">
+                                <img ng-src="{{image.url}}">
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="arcitle_note notes text_right">
+                <span>{{post.floor}}楼</span>
+                <span class="user_note">{{post.create_time|datetime}}</span>
+                <a class="highlight js_reply cur" ng-click="rewardPost($index)">打赏</a>
+                <a class="highlight js_reply cur" ui-sref="post/info({id:'{{post.id}}'})">编辑</a>
+                <a class="highlight js_reply cur" ng-click="delete($index)">删除</a>
+                <a class="highlight js_reply cur" ng-click="replayFocus($index)">回复</a>
+            </div>
+        </div>
+    </li>
+</ul>
+<div pages></div>
+<div class="reply-panel p20">
+    <div class="form-group row">
+        <div class="col-sm-5">
+            <input type="text" class="form-control" ng-model="reply.publisher_username" placeholder="发表者用户名">
+        </div>
+    </div>
+    <div class="form-group">
+        <div uploadfile ng-model="reply.avatars" key="image_ids" root="reply" multiple="multiple" data-is_watermark="true">
+            <div class="button btn btn-success button" multiple="multiple" ng-file-select ng-file-change="upload($files)">添加附件</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <textarea style="height:300px" class="form-control reply-content" ng-model="reply.content" placeholder="作品信息:长度范围10-10000" rows="3"></textarea>
+    </div>
+    <div class="form-group ">
+        <button type="button" class="btn btn-primary" ng-click="replyPost()">提交</button>
+    </div>
+</div>
+<div ui-modal class="rewardPop" title="打赏金币" ng-submit="rewardSubmit()">
+    <label>金币数:</label>
+    <input type="number" class="form-control" ng-model="rewardData.amount" placeholder="金币数(1~100)">
+    <label>打赏者:</label>
+    <div realtime trimclear="true" ng-model="rewardData.payer_id" search-type="user">
+        <input type="text"  placeholder="打赏者,不填默认为撸老师">
+    </div>
+</div>

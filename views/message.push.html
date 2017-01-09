@@ -1,0 +1,83 @@
+<div pagetitle>
+    <span>推送消息</span>
+</div>
+<div goback>
+</div>
+<div class="form-content">
+    <form class="form-horizontal" role="form" ng-submit="submit()">
+        <div forminput="类型" required>
+            <ul selectcon ng-model="data.type" ng-change="updateType()">
+                <li selectvalue="1">回复</li>
+                <li selectvalue="2">@</li>
+                <li selectvalue="3">老师</li>
+                <li selectvalue="4">话题</li>
+                <li selectvalue="5">意见反馈</li>
+                <li selectvalue="6">用户</li>
+                <li selectvalue="8">香蕉</li>
+                <li selectvalue="9">回帖</li>
+                <li selectvalue="7">内容审核</li>
+                <li selectvalue="100">话题收藏</li>
+                <li selectvalue="101">消息提醒</li>
+                <li selectvalue="102">应用更新</li>
+            </ul>
+        </div>
+        <div forminput="标题" required>
+            <ul selectcon ng-model="data.subtype">
+                <li selectvalue="10" ng-show="data.type==1">回复话题</li>
+                <li selectvalue="11" ng-show="data.type==1">回复某楼</li>
+                <li selectvalue="30" ng-show="data.type==3">老师新作</li>
+                <li selectvalue="40" ng-show="data.type==4">话题被赞</li>
+                <li selectvalue="42" ng-show="data.type==4">话题被移动</li>
+                <li selectvalue="43" ng-show="data.type==4">话题被小组管理员删除</li>
+                <li selectvalue="41" ng-show="data.type==4">热门话题</li>
+                <li selectvalue="50" ng-show="data.type==5">意见反馈得到回复</li>
+                <li selectvalue="60" ng-show="data.type==6">等级提升</li>
+                <li selectvalue="61" ng-show="data.type==6">暂时禁言</li>
+                <li selectvalue="70" ng-show="data.type==7">内容被删</li>
+                <li selectvalue="1000" ng-show="data.type==100">话题更新</li>
+                <li selectvalue="80" ng-show="data.type==8">话题被打赏香蕉</li>
+                <li selectvalue="81" ng-show="data.type==8">回帖被打赏香蕉</li>
+                <li selectvalue="82" ng-show="data.type==8">商品评分获得香蕉</li>
+                <li selectvalue="83" ng-show="data.type==8">发表商品体验报告获得香蕉</li>
+                <li selectvalue="91" ng-show="data.type==9">回帖被小组管理员删除</li>
+                <li selectvalue="1010" ng-show="data.type==101">有新消息</li>
+                <li selectvalue="1020" ng-show="data.type==102">有新版本</li>
+            </ul>
+        </div>
+        <div forminput="推送方式" required>
+            <ul selectcon ng-model="data.send_type">
+                <li selectvalue="" selected="">请选择</li>
+                <li selectvalue="broadcast">广播</li>
+                <li selectvalue="customizedcast">单播</li>
+            </ul>
+        </div>
+        <div forminput="平台" ng-if="data.send_type=='broadcast'">
+            <ul selectcon ng-model="data.platform">
+                <li selectvalue="android">android</li>
+                <li selectvalue="ios">ios</li>
+                <li selectvalue="wp">wp</li>
+                <li selectvalue="admin">admin</li>
+                <li selectvalue="web">web</li>
+            </ul>
+        </div>
+        <div forminput="接收者" ng-if="data.send_type=='customizedcast'">
+            <div realtime ng-model="data.receiver_id"  search-type="user">
+                <input type="text" placeholder="搜索用户以添加">
+            </div>
+        </div>
+        <div forminput="发送者" ng-if="data.send_type=='customizedcast'">
+            <div realtime ng-model="data.sender_id"  search-type="user">
+                <input type="text" placeholder="搜索用户以添加,默认为官方">
+            </div>
+        </div>
+        <div forminput="内容" >
+            <textarea style="height:300px" ng-model="data.context" placeholder="内容消息,格式为JSON" rows="3"></textarea>
+        </div>
+        <div class="form-group mt20 ">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">推送</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

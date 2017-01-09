@@ -1,0 +1,79 @@
+<div pagetitle>云购获奖列表</div>
+<div goback class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>排序:</label>
+        <ul selectcon ng-model="filter.sort" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="show_time_asc">按揭晓时间顺序</li>
+            <li selectvalue="show_time_desc">按揭晓时间倒序</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>领取状态:</label>
+        <ul selectcon ng-model="filter.status" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="1">未领取</li>
+            <li selectvalue="2">已领取</li>
+            <li selectvalue="3">已发货</li>
+        </ul>
+    </div>
+    <button ng-if="filter.good_id" class="btn btn-success" ui-sref="cloud/reward_list()" ui-sref-opts="{reload: true,inherit :false}">查看全部</button>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>商品</th>
+            <th>名称</th>
+            <th>云购期数</th>
+            <th>揭晓状态</th>
+            <th>领取状态</th>
+            <th>获奖时间</th>
+            <th>获奖用户</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td>
+                <div class="img-con " style="margin:auto">
+                    <img ng-src="{{item.image.url}}">
+                </div>
+            </td>
+            <td>
+                <a ui-sref="mall/inner_good_info({id:'{{item.id}}'})">{{item.name}}</a>
+            </td>
+            <td>{{item.cloud_num}} / {{item.max_cloud_num}}</td>
+            <td>{{item.status | usercloudstatus}}</td>
+            </td>
+            <td>
+                <span ng-class="{red:item.cloud_reward.status==1}">{{item.cloud_reward.status | rewardstatus}}</span>
+                <br>
+                <span class="note">本云总卖出:</span>{{item.cloud_reward.total_copies}}份
+            </td>
+            <td>
+                <span class="note">中奖号码购买:</span> {{item.cloud_reward.buy_time |datetime}}
+                <br>
+                <span class="note">服务端揭晓:</span> {{item.cloud_reward.announce_time |datetime}}
+                <br>
+                <span class="note">客户端揭晓:</span> {{item.cloud_reward.show_time |datetime|afternow}}
+            </td>
+            <td>
+                <span class="note">用户：</span><a ui-sref="user/info({id:'{{item.cloud_reward.user.id}}'})">{{item.cloud_reward.user |internal}}</a>
+                <br> <span class="note">中奖号码：</span>{{item.cloud_reward.code}}
+                <br> <span class="note">用户本云购买：</span>{{item.cloud_reward.user_total_copies}}份
+                <br>
+            </td>
+            <td>
+                <a ui-sref="cloud/info({good_id:'{{item.id}}',cloud_num:'{{item.cloud_num}}',rewarded:true})">详情</a>
+                <br>
+                <a ng-if="!filter.good_id" ui-sref="cloud/reward_list({good_id:'{{item.id}}'})" ui-sref-opts="{reload: true,inherit :false}">只看该商品</a>
+                <a ng-if="!filter.cloud_num" ui-sref="cloud/user_cloud_list({keyword_good:'{{item.name}}',good_id:'{{item.id}}',cloud_num:'{{item.cloud_num}}',currentPage:'1'})" ui-sref-opts="{reload: true,inherit :true}">购买记录</a>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>

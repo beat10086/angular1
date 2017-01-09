@@ -1,0 +1,36 @@
+<div pagetitle>
+    <span >意见反馈详情</span>
+</div>
+<div goback></div>
+<div class="form-content">
+    <form class="form-horizontal" role="form" ng-submit="submit()">
+     <div forminput="反馈者" >
+            <div class="form-line" >{{data.submitter.nick||data.submitter.username}} </div>
+        </div>
+         <div forminput="反馈内容" >
+            <div class="form-line" >{{data.content}}</div>
+        </div>
+        <div forminput="平台" >
+            <div class="form-line" >{{data.platform.name}} {{data.platform.version}}</div>
+        </div>
+        <div forminput="应用" >
+            <div class="form-line" >{{data.app.name}} {{data.app.version}}</div>
+        </div>
+         <div forminput="User-Agent" >
+            <pre>{{data.user_agent}}</pre>
+        </div>
+        <div forminput="状态" required>
+            <ul selectcon ng-model="data.status" >
+                    <li selectvalue="0">未处理</li>
+                    <li selectvalue="1">待处理</li>
+                    <li selectvalue="2">已处理</li>
+                </ul>
+        </div>
+        <div class="form-group mt20 ">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

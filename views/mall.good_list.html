@@ -1,0 +1,146 @@
+<div pagetitle><span ng-if="filter.platform==1">淘宝</span><span ng-if="filter.platform==2">自营</span>商品列表</div>
+<div goback back-key="{{filter.navigation_id}}" class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>排序:</label>
+        <ul selectcon ng-model="filter.sort" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="add_time_asc">按添加时间顺序</li>
+            <li selectvalue="add_time_desc">按添加时间倒序</li>
+            <li selectvalue="month_sales_asc">按月销量顺序</li>
+            <li selectvalue="month_sales_desc">按月销量倒序</li>
+            <li selectvalue="price_asc">按价格升序</li>
+            <li selectvalue="price_desc">按价格倒序</li>
+            <li ng-show="filter.navigation_id" selectvalue="position_asc">按自定义升序</li>
+            <li ng-show="filter.navigation_id" selectvalue="position_desc">按自定义倒序</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>状态:</label>
+        <ul selectcon ng-model="filter.status" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="1">上架</li>
+            <li selectvalue="2">下架</li>
+            <li selectvalue="3">新建</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>所属导航:</label>
+        <ul selectcon ng-model="filter.navigation_id" ng-change="changeNav()">
+            <li selectvalue="" selected="">全部</li>
+            <li selectvalue="{{nav.id}}" ng-repeat="nav in filternav">{{nav.name}}</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>所属类别:</label>
+        <ul selectcon ng-model="filter.category_id" ng-change="search()">
+            <li selectvalue="" selected="">全部</li>
+            <li ng-if="!filter.navigation_id" selectvalue="">请先选择导航</li>
+            <li selectvalue="{{cate.id}}" ng-repeat="cate in filtercate">{{cate.name}}</li>
+        </ul>
+    </div>
+    <div class="form-group navbar-right" role="search">
+        <input type="text" class="form-control" ng-model="filter.keyword" placeholder="搜索">
+        <button type="button" class="btn btn-primary" ng-click="search()">搜 索</button>
+        <a ui-sref="mall/task_good" class="btn btn-default" ng-if="filter.platform==1">抓取商品</a>
+        <a ui-sref="mall/add_good" class="btn btn-default" ng-if="filter.platform==1">添加商品</a>
+        <a ui-sref="mall/add_inner_good" class="btn btn-default" ng-if="filter.platform==2">添加商品</a>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th ng-if="filter.navigation_id">位置</th>
+            <th>所属导航</th>
+            <th>所属类别</th>
+            <th>商品货号</th>
+            <th>商品名称</th>
+            <th>图片</th>
+            <th>月销售量</th>
+            <th ng-if="filter.platform==1">商家名称</th>
+            <th>状态</th>
+            <th ng-if="filter.platform==1">详情链接</th>
+            <th>价格</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td ng-if="filter.navigation_id">{{item.position}}</td>
+            <td>{{item.category.navigation.name}}</td>
+            <td>{{item.category.name}}</td>
+            <td><div ng-if="style.status==1" ng-repeat="style in item.styles">
+                <span>{{style.item}}({{style.name}})</span><br>
+            </div></td>
+            <td>{{item.name}}</td>
+            <td>
+                <div class="img-con" ng-if="item.images">
+                    <img ng-src="{{item.images[0].url}}">
+                </div>
+            </td>
+            <td>{{item.month_sales}}</td>
+            <td ng-if="filter.platform==1">{{item.merchant}}</td>
+            <td>
+                <ul selectcon ng-model="item.status" ng-change="changeStatus($index)">
+                    <li selectvalue="1">上架</li>
+                    <li selectvalue="2">下架</li>
+                    <li selectvalue="3">新建</li>
+                </ul><br>
+                <span ng-if="item.onsale_time">上架时间:<br>{{item.onsale_time |datetime}}</span>
+            </td>
+            <td ng-if="filter.platform==1">
+                <a target="_blank" ng-href="{{item.platattach.details_url}}" ng-if="item.platattach.details_url">详情链接</a>
+            </td>
+            <td ng-if="filter.platform==1">{{item.platattach.price | price}}</td>
+            <td ng-if="filter.platform==2">{{item.styles | stylesprice}}</td>
+            <td>
+                <div class="dropdown" ng-if="item.status==1">
+                    <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                        推荐
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                        <li role="presentation"><a add-recommend data-type="ad_mall_index" data-object_id="{{item.id}}" data-object_type="good">集市--{{item.category && item.category.navigation && item.category.navigation.name || ''}}Banner</a></li>
+                        <li role="presentation"><a ng-click="recommendNavGood($index)">集市--{{item.category && item.category.navigation && item.category.navigation.name || ''}}</a></li>
+                        <li role="presentation"><a add-recommend data-type="daily_good" data-object_id="{{item.id}}" data-object_type="good">首页每日折扣</a></li>
+                        <li role="presentation"><a add-recommend data-type="new_good" data-object_id="{{item.id}}" data-object_type="good">推荐商城最新商品</a></li>
+                    </ul>
+                </div>
+                <a ui-sref="mall/good_info({id:'{{item.id}}'})" ng-if="filter.platform==1">详情</a>
+                <a ui-sref="mall/inner_good_info({id:'{{item.id}}'})" ng-if="filter.platform==2">详情</a>
+                <button class="btn btn-link" ng-click="delete($index)" ng-if="filter.platform==2">删除</button>
+                <br>
+                <button class="btn btn-link" ng-click="commentGood($index)">添加评论</button>
+                <a ui-sref="mall/good_comment_list({good_id:'{{item.id}}'})">查看评论</a>
+                <button class="btn btn-link" ng-click="spider($index)" ng-if="filter.platform==1">手动抓取更新</button>
+                <br>
+                <a ui-sref="spider/sp_task_list({object_id:'{{item.id}}'})" ng-if="filter.platform==1">相关爬取任务</a>
+                <div ng-if="filter.navigation_id" positions="mall_good" position-now="{{item.position}}" data-id="{{item.id}}"></div>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>
+<div ui-modal class="commentPop" title="添加评论" ng-submit="commentSubmit()">
+    <label>评论时间:</label>
+    <input type="text" class="form-control" dateselect min-view="0" minute-step="2" format="yyyy-mm-dd hh:ii:ss" ng-model="commentData.create_time" placeholder="评论时间 ">
+    <br>
+    <label>内容:</label>
+    <input type="text" class="form-control" ng-model="commentData.content" placeholder="评论内容，长度1到1000">
+    <br>
+    <label>评分:</label>
+    <input type="number" class="form-control" ng-model="commentData.score" placeholder="评分，1到5">
+    <br>
+    <label>用户:</label>
+    <div realtime trimclear="true" ng-model="commentData.publisher_id" search-type="user">
+        <input type="text" placeholder="用户">
+    </div>
+</div>
+<div ui-modal class="recommendNavGood" title="推荐" ng-submit="recommendSubmit()">
+    <div>集市--{{recommendData.nav_name}}</div>
+    <label>展示文字:</label>
+    <input type="text" class="form-control" ng-model="recommendData.show_words" placeholder="输入展示文字">
+</div>

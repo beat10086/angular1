@@ -1,0 +1,181 @@
+<div pagetitle>自营订单列表</div>
+<div goback back-key="{{filter.navigation_id}}" class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>状态:</label>
+        <ul selectcon ng-model="filter.status" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="0">待付款</li>
+            <li selectvalue="10">待发货</li>
+            <li selectvalue="20">退款中</li>
+            <li selectvalue="30">待收货</li>
+            <li selectvalue="40">已收货</li>
+            <li selectvalue="45">退货中</li>
+            <li selectvalue="50">交易完成</li>
+            <li selectvalue="60">订单失效</li>
+            <li selectvalue="70">已退款</li>
+            <li selectvalue="80">已退货</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>时间:</label>
+        <input type="text" dateselect min-view="1" format="yyyy-mm-dd hh:00:00" class="form-control" ng-change="search()" ng-model="filter.start_time" placeholder="请选择">
+    </div>
+    <div class="form-group">
+        <label>至:</label>
+        <input type="text" dateselect min-view="1" format="yyyy-mm-dd hh:00:00" class="form-control" ng-change="search()" ng-model="filter.end_time" placeholder="请选择">
+    </div>
+    <div class="form-group navbar-right" role="search">
+        <button type="button" class="btn btn-success" ng-click="multiCheck.mutiSubmit('deliver')">批量导出快递</button>
+        <button type="button" class="btn btn-success" ng-click="multiCheck.mutiSubmit('details')">批量导出货单</button>
+        <a href="mall/order_export_xls" class="btn btn-success">批量导出订单</a>
+    </div>
+    <div style="margin-top:5px;">
+        <div class="form-group navbar-right" role="search">
+            <button ng-if="params.user_id||params.keyword||params.good_id" class="btn btn-success" ui-sref="mall/inner_order_list()" ui-sref-opts="{reload: true,inherit :false}">返回全部</button>
+            <div class="form-group">
+                <input type="text" class="form-control" ng-model="filter.keyword" placeholder="订单号">
+            </div>
+            <div class="form-group">
+                <div realtime trimclear="true" ng-model="filter.good_id" search-type="good" class="inline-block">
+                    <input type="text" class="form-control" ng-model="filter.keyword_good" placeholder="所购商品">
+                </div>
+            </div>
+            <div realtime trimclear="true" ng-model="filter.user_id" search-type="user" class="inline-block">
+                <input type="text" ng-model="filter.keyword_user" placeholder="提交请求的用户">
+            </div>
+            <button type="button" class="btn btn-primary" ng-click="search()">搜 索</button>
+        </div>
+    </div>
+</div>
+<div ng-show="filter.status==30||filter.status==10" class="mini-page-title">
+    <label class="">
+        <input type="checkbox" class="checkbox-inline" ng-change="multiCheck.checkAll()" ng-model="checkedAll"><b class="v-align"> 全选</b>
+    </label>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>商品货号</th>
+            <th>商品图片与名称</th>
+            <th>购买型号</th>
+            <th width="100">商品单价</th>
+            <th>数量</th>
+            <th>实收金额</th>
+            <th>退款详情</th>
+            <th>买家</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody ng-repeat="($i,order) in data">
+        <tr>
+            <td colspan="9" class="clear-fix" style="background:#f2f2f2;border-top: 2px solid #ddd">
+                <div class="row">
+                    <label class="col-sm-2" style="margin-bottom: 0">
+                        <input ng-if="order.status==30||order.status==10" type="checkbox" value="{{order.id}}" ng-model="order.check" ng-click="multiCheck.toggleCheck($i,$event)"> 订单编号: {{order.extern_order_id}}
+                    </label>
+                    <span class="col-sm-4">创建时间: {{order.create_time | datetime}}</span>
+                    <span class="col-sm-6 fr" style="text-align: right">订单状态: {{order.status_message }}</span>
+                </div>
+            </td>
+        </tr>
+        <tr ng-repeat="item in order.details">
+            <td>
+                <div ng-if="style.style_index==item.style_index" ng-repeat="style in item.good.styles">{{style.item}}</div>
+            </td>
+            <td>
+                <div class="img-con " style="margin:auto">
+                    <img getstyleimg ng-model="item.good.styles" index="{{item.style_index}}">
+                </div>
+                <div style="width:150px;margin:auto;text-aligh:center">
+                    <a ui-sref="mall/inner_good_info({id:'{{item.good.id}}'})" >{{item.good.name}}</a>
+                </div>
+                
+            </td>
+            <td><span getstyle ng-model="item.good.styles" key="name" index="{{item.style_index}}"></span></td>
+            <td>{{item.price | price}}</td>
+            <td>{{item.num}}</td>
+            <td rowspan="{{order.details.length}}" ng-if="$first">
+                <span>{{order.settlement_detail.pay_amount | price}}</span>
+                <span class="note">(包含邮费{{order.settlement_detail.deliver_price | price}}</span>
+                <span class="note" ng-if="order.settlement_detail.discount">优惠{{order.settlement_detail.discount | price}}</span>
+                <span class="note">)</span>
+                <br />
+                <span ng-if="order.pingpp_charge_id">Ping++平台</span><span class="note" ng-if="order.channel">({{order.channel | channel}})</span>
+                <span ng-if="!order.pingpp_charge_id && !order.cloud_reward_id">支付宝直接支付</span>
+                <span ng-if="!order.pingpp_charge_id && order.cloud_reward_id">云购</span>
+            </td>
+            <td rowspan="{{order.details.length}}" ng-if="$first">
+                <ul ng-repeat="refund in order.pingpp_refunds">
+                    <li ng-if="refund.is_full && refund.refund_amount" class="red">已全部退款:{{refund.refund_amount}}<span class="note">({{ refund.description }})</span></li>
+                    <li ng-if="refund.is_full && !refund.refund_amount && refund.url">申请全部退款<span class="note"><a href="{{refund.url}}">验证</a>({{ refund.description }})</span></li>
+                    <li ng-if="refund.is_full && !refund.refund_amount && !refund.url">申请全部退款<span class="note">({{ refund.description }})</span></li>
+                    <li ng-if="!refund.is_full && refund.refund_amount">已退款:<span class="red">{{ refund.refund_amount }}</span><span class="note">({{ refund.description }})</span></li>
+                    <li ng-if="!refund.is_full && !refund.refund_amount && refund.url">申请退款:<span class="red">{{ refund.amount }}</span>
+                    <a target="_blank" ng-href="{{refund.url}}">验证</a><span class="note">({{ refund.description }})</span></li>
+                    <li ng-if="!refund.is_full && !refund.refund_amount && !refund.url">申请退款:<span class="red">{{ refund.amount }}</span><span class="note">({{ refund.description }})</span></li>
+                </ul>
+            </td>
+            <td rowspan="{{order.details.length}}" ng-if="$first">
+                <a ui-sref="user/info({id:'{{order.user.id}}'})">{{order.user |internal}}</a>
+                <br> {{order.message}}
+            </td>
+            <td rowspan="{{order.details.length}}" ng-if="$first" class="t_bar">
+                <a ui-sref="mall/inner_order_info({id:'{{order.id}}'})">详情</a>
+                <br />
+                <a ng-if="order.status==10" ui-sref="mall/inner_order_deliver({id:'{{order.id}}'})">发货</a>
+                <a ng-if="order.status==30" deliver="{{order.deliver_id}}">查看物流</a>
+                <button class="btn btn-link" ng-if="order.status==30" ng-click="receive($i)">确认收货</button>
+                <button class="btn btn-link" ng-if="order.status==10 || order.status==20" ng-click="cancel($i)">订单取消</button>
+                <button class="btn btn-link" ng-if="order.status==20" ng-click="cancel_refund($i)">取消退款</button>
+                <!-- <button class="btn btn-link" ng-if="order.status==20" ng-click="refund($i)">确认退款</button> -->
+                <button class="btn btn-link" ng-if="order.status==45" ng-click="cancel_reject_good($i)">取消退货</button>
+                <button class="btn btn-link" ng-if="order.status==45" ng-click="reject($i)">确认退货</button>
+                <button class="btn btn-link" ng-if="order.status==30 || order.status==40" ng-click="finish($i)">订单完成</button>
+                <br />
+                <a ui-sref="mall/coupon_list({user_id:'{{order.user.id}}',keyword:'{{order.user.nick||order.user.username}}'})">查看用户优惠券</a>
+                <button class="btn btn-link" ng-if="[10,30,40].indexOf(order.status)>-1" ng-click="partial_refunding($i)">部分退款</button>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>
+<!-- 取消订单 -->
+<div ui-modal class="cancelPop" title="取消订单" ng-submit="cancelSubmit()">
+    <!--     <div>
+        <label>是否返还优惠券</label>
+        <label class="checkbox-inline">
+            <input type="radio" ng-model="cancelData.is_back_coupons" value="true">是</label>
+        <label class="checkbox-inline">
+            <input type="radio" ng-model="cancelData.is_back_coupons" value="false">否</label>
+    </div>
+    <br>
+-->
+    <label><span class="red">*</span>取消原因:</label>
+    <input type="text" class="form-control" ng-model="cancelData.reason" placeholder="取消原因">
+    <br>
+    <!--     <label>退还金额:</label>
+    <input type="text" class="form-control" ng-model="cancelData.back_amount" placeholder="退还金额">
+ -->
+</div>
+<!-- 确认退款 -->
+<!-- <div ui-modal class="refundPop" title="确认退款" ng-submit="refundSubmit()">
+    <label><span class="red">*</span>退还金额:</label>
+    <input type="text" class="form-control" ng-model="refundData.refund_amount" placeholder="退还金额">
+</div>
+ -->
+<!-- 确认退货 -->
+<div ui-modal class="rejectPop" title="确认退货" ng-submit="rejectSubmit()">
+    <label><span class="red">*</span>退还金额:</label>
+    <input type="text" class="form-control" ng-model="rejectData.refund_amount" placeholder="退还金额">
+</div>
+<div ui-modal class="partialPop" title="部分退款" ng-submit="partialSubmit()">
+    <label><span class="red">*</span>退还金额:</label>
+    <input type="text" class="form-control" ng-model="partialData.amount" placeholder="退还金额">
+    <br>
+    <label><span class="red">*</span>退款原因:</label>
+    <input type="text" class="form-control" ng-model="partialData.description" placeholder="取消原因">
+</div>

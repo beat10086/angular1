@@ -1,0 +1,54 @@
+<div pagetitle>音频栏目列表</div>
+<div goback back-key class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <a ui-sref="topic/list({group_id:'55bb2b16c4eb4d46ba2e7139'})" class="btn btn-primary">电台话题列表</a>
+    <div class="form-group navbar-right" role="search">
+
+        <a ui-sref="audio/create" class="btn btn-default">创建音頻</a>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>对象标题</th>
+            <th>对象文件</th>
+            <th>图片</th>
+            <th>期数</th>
+            <th>关联话题</th>
+            <th>开启时间</th>
+            <th>创建时间</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td>
+                {{item.title}}
+            </td>
+            <td>
+                <a target="_blank" ng-if="item.audio" ng-href="{{item.audio.url}}" class="file-con file-con-mini">
+                    <b>{{item.audio.filename | filemime}}</b>
+                </a>
+            </td>
+            <td>
+                 <div class="img-con" >
+                    <img ng-src="{{item.image.url}}">
+                </div>
+            </td>
+            <td>{{item.stage_no}}</td>
+            <td>
+                 <a ng-href="#/topic/info/{{item.topic_id}}">{{item.topic && item.topic.title}}</a>
+            </td>
+            <td>{{item.start_time | datetime }}</td>
+            <td>{{item.create_time |datetime}}</td>
+            <td class="t_bar">
+                <a ui-sref="audio/info({id:'{{item.id}}'})">详情</a>
+                <button class="btn btn-link" ng-click="delete($index)">删除</button>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>

@@ -1,0 +1,53 @@
+<div pagetitle>优惠券列表 <span ng-if="filter.keyword">— {{filter.keyword}}</span></div>
+<div goback back-key class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group navbar-right" role="search">
+        <a ui-sref="mall/gift_package_create" class="btn btn-default">创建赠品</a>
+    </div>
+</div>
+<table class="table table-bordered table-striped top_align ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th rowspan="2">赠品名称</th>
+            <th colspan="2">包含物品:</th>
+            <th rowspan="2">创建时间</th>
+            <th rowspan="2">操作</th>
+        </tr>
+        <tr>
+            <th>名称</th>
+            <th>数量</th>
+        </tr>
+    </thead>
+    <tbody ng-repeat="package in data">
+        <tr>
+            <td rowspan="{{package.gifts.length}}">
+                {{package.package_name}}
+            </td>
+            <td>
+                {{package.gifts[0].name}}
+            </td>
+            <td>
+                {{package.gifts[0].num}}
+            </td>
+            <td rowspan="{{package.gifts.length}}">
+                {{package.create_time | datetime}}
+            </td>
+            <td rowspan="{{package.gifts.length}}">
+                <button class="btn btn-link" ng-click="delete($index)">删除</button>
+                <a ui-sref="mall/gift_package_info({id:'{{package.id}}'})" class="btn btn-link" >详情</a>
+            </td>
+        </tr>
+        <tr ng-repeat="gift in package.gifts" ng-if="!$first">
+            <td>
+                {{gift.name}}
+            </td>
+            <td>
+                {{gift.num}}
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>

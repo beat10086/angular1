@@ -1,0 +1,25 @@
+<div>
+    <button class="btn btn-link"  ng-hide="isFirst" ng-click="setUp()">上移</button>
+    <button class="btn btn-link"  ng-hide="isLast" ng-click="setDown()">下移</button>
+    <button class="btn btn-link" ng-click="setPosition($index)">指定位置</button>
+    <div class="modal fade positionPop{{$index}}">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">指定位置</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="form-control" ng-model="currentposition" placeholder="{{defposition}}">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" ng-click="setCustom($index)">确认</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+</div>

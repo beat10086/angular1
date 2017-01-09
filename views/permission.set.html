@@ -1,0 +1,60 @@
+<div pagetitle>
+    <span>开通权限</span>
+</div>
+<div goback>
+    <span>
+    </span>
+</div>
+<div class="p-con">
+    <form class="form-horizontal" role="form" ng-submit="submit()">
+        <div class="checked-list">
+            <h4><b>选择预览:</b></h4>
+            <hr>
+            <h5><b>用户: </b> {{username}}</h5>
+            <hr>
+            <h5><b>权限: </b><h5>
+            <ul>
+                <li ng-repeat="item in checked">{{item}}</li>
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col-sm-10">
+                <div realtime trimclear="true" ng-model="username" save-key="username" search-type="user">
+                    <input type="text" ng-model="username" placeholder="搜索用户以选择用户">
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <button type="button" class="btn btn-primary" ng-click="getPer()">获取用户权限</button>
+            </div>
+        </div>
+        <div class="permission-list" ng-if="data">
+            <h2 class="p-item" ><label title="*" ng-class="{active:chosedList['*']}"><input ng-click="chose($event)" type="checkbox" class="checkbox-inline" value="*"> * </label></h2>
+            <ul>
+                <li>
+                    <h3 class="p-item" ng-if="!i0" ng-repeat="(i0 , v0) in data[0] ">
+                    <label title="{{v0}}" ng-class="{active:chosedList[v0]}"><input ng-click="chose($event)" type="checkbox" class="checkbox-inline" value="{{v0}}"> {{v0.replace('.*','')}} </label>
+                    </h3>
+                    <ul  ng-if="i0" ng-repeat="(i0 , v0) in data[0] ">
+                        <li ng-if="i0" ng-repeat="(i1 , v1) in v0">
+                            <h4 class="p-item" ng-if="!i2" ng-repeat="(i2 , v2) in v1">
+                            <label  ng-class="{active:chosedList[v2]}" title="{{v2}}"><input ng-click="chose($event)" type="checkbox" class="checkbox-inline" value="{{v2}}"> {{v2.replace(data[0][0].replace('*',''),'').replace('.*','')}} </label>
+                            </h4>
+                            <ul class="clear" ng-if="i2" ng-repeat="(i2 , v2) in v1">
+                                <li class="end-li" ng-if="i2" ng-repeat="(i3 , v3) in v2 track by $index">
+                                    <h5 class="p-item">
+                                    <label  ng-class="{active:chosedList[v3]}" title="{{v3}}"><input ng-click="chose($event)" type="checkbox" class="checkbox-inline" value="{{v3}}"> {{v3.replace(v1[0].replace('*',''),'')}}</label>
+                                    </h5>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="form-group mt20 ">
+            <div class=" col-sm-10">
+                <button type="submit" class="btn btn-primary">保存</button>
+            </div>
+        </div>
+    </form>
+</div>

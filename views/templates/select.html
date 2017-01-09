@@ -1,0 +1,10 @@
+<div class=" btn-group">
+  <button class="btn btn-default dropdown-toggle" type="button"  data-toggle="dropdown" aria-expanded="true">
+    <span ng-repeat="sel in selected" >{{sel}}<span ng-hide="($last ===true)">,</span></span>
+    <span class="caret"></span>
+  </button>
+  <!-- <ul class="dropdown-menu" role="menu" >
+    <li ng-class="{active:p.active}"  ng-repeat="p in option"><a  ng-click="select($index,$event)">{{p.text}}</a></li>
+  </ul> -->
+  <ul ng-transclude class="dropdown-menu"></ul>
+</div>

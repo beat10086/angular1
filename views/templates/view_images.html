@@ -1,0 +1,13 @@
+<div ng-controller="viewImagesCtrl">
+    <div class="view-img-fixed" ng-click="hideView()">
+        <div class="view-img-con">
+            <img no-detail="true" ng-src="{{ imgNow }}" class="now-img">
+        </div>
+        <ul class="img-list">
+            <li class="img-con" ng-repeat="item in list track by $index" ng-class="{active:item==imgNow}">
+                <img no-detail="true" ng-src="{{item}}" ng-click="slide($index,$event)">
+            </li>
+        </ul>
+    </div>
+    <div class="load-place"></div>
+</div>

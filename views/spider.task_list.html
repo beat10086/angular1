@@ -1,0 +1,87 @@
+<div pagetitle>单页任务列表</div>
+<div goback back-key class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+   
+    <div class="form-group">
+        <label>状态:</label>
+        <ul selectcon ng-model="filter.status" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="1">等待</li>
+            <li selectvalue="2">进行中</li>
+            <li selectvalue="3">完成</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>结果:</label>
+        <ul selectcon ng-model="filter.is_success" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="true">成功</li>
+            <li selectvalue="false">失败</li>
+        </ul>
+    </div>
+     <div class="form-group">
+        <label>持续更新:</label>
+        <ul selectcon ng-model="filter.is_continue_update" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="true">是</li>
+            <li selectvalue="false">否</li>
+        </ul>
+    </div>
+    <div class="form-group navbar-right" role="search">
+         <a ui-sref="spider/task_create" class="btn btn-default">抓取话题</a>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>原始链接</th>
+            <th>小组</th>
+            <th>用户</th>
+            <th>持续更新</th>
+            <th>状态</th>
+            <th>结果</th>
+            <th>添加时间</th>
+            <th>管理员</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="task in data">
+            <td>
+                <a ng-href="{{task.url}}" target="_blank">{{task.url}}</a>
+            </td>
+            <td>
+                <a ui-sref="group/info({id:'{{task.group_id}}'})">{{task.group.title}}</a>
+            </td>
+            <td>
+                <a ui-sref="user/info({id:'{{task.creator_id}}'})">{{task.creator.nick||task.creator.username}}</a>
+            </td>
+            <td>
+                {{task.is_continue_update|booleanfilter}}
+            </td>
+            <td>
+                {{task.status | processstatus}}
+            </td>
+            <td>
+                <span ng-if="task.error_code" class="btn btn-link" title="{{task.error}}">失败({{task.error_code}})</span>
+                <span ng-if="!task.error_code&&task.status == 3" class="btn btn-link" title="{{task.result}}">成功</span>
+            </td>
+            <td>
+                {{task.create_time | datetime}}
+            </td>
+            <td>
+                <a ui-sref="user/info({id:'{{task.admin_id}}'})">{{task.admin.nick||task.admin.username}}</a>
+                
+            </td>
+            <td class="t_bar">
+                <a ui-sref="spider/task_info({id:'{{task.id}}'})">详情</a>
+                <a ui-sref="topic/info({id:'{{task.topic_id}}'})">查看话题</a>
+                <button class="btn btn-link" ng-click="retry($index)">重新抓取</button>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>

@@ -1,0 +1,54 @@
+<div pagetitle>推荐列表</div>
+<div goback back-key class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group navbar-right" role="search">
+        <a ui-sref="mall/add_navigation" class="btn btn-default">添加导航</a>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>位置</th>
+            <th>导航名称</th>
+            <th>banner商品/商品海报</th>
+            <th>状态</th>
+            <th>添加时间</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td>
+                {{item.position}}
+            </td>
+            <td>
+                {{item.name}}
+            </td>
+            <td>
+                <a ui-sref="mall/inner_good_info({id:'{{item.banner_good.id}}'})" ng-if="item.banner_good">{{item.banner_good.name}}</a>
+                <div class="img-con-poster" ng-if="item.banner_good.small_poster">
+                    <img ng-src="{{item.banner_good.small_poster.url}}">
+                </div>
+            </td>
+            <td>
+                <ul selectcon ng-model="item.status" ng-change="changeStatus($index)">
+                    <li selectvalue="1">正常</li>
+                    <li selectvalue="2">隐藏</li>
+                </ul>
+            </td>
+            <td>
+                {{item.create_time | datetime}}
+            </td>
+            <td class="t_bar">
+                <a ui-sref="mall/category_list({navigation_id:'{{item.id}}'})">下属类别</a>
+                <a ui-sref="mall/navigation_info({id:'{{item.id}}'})">详情</a>
+               <!--  <button class="btn btn-link" delete-recommend data-type="{{filter.type}}" data-object_id="{{item.object_id}}">取消推荐</button> -->
+                <div positions="mall_navigation" position-now="{{item.position}}"  data-id="{{item.id}}"></div>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>

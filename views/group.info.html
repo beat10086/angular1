@@ -1,0 +1,65 @@
+<div pagetitle>
+    <span ng-if="edit">小组详情</span>
+    <span ng-if="!edit">创建小组</span>
+</div>
+<div goback>
+    <span ng-if="edit">
+    <button class="btn btn-danger" ng-click="delete()"><span class="glyphicon glyphicon-trash"></span> 删除</button>
+     <a class="btn btn-default" ng-href="#/topic/list?group_id={{data.id}}">查看话题</a>
+    <div class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+            推荐
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+            <li role="presentation"><a add-recommend data-type="hot_group" data-object_id="{{data.id}}" data-object_type="data">推荐热门</a></li>
+            <li role="presentation"><a add-recommend data-type="ad_group_index" data-object_id="{{data.id}}" data-object_type="group">推荐广场Banner</a></li>
+        </ul>
+    </div>
+    </span>
+</div>
+<div class="form-content">
+    <form class="form-horizontal" role="form" ng-submit="submit()">
+        <div forminput="标题" required>
+            <input type="text" ng-model="data.title" placeholder="小组标题">
+        </div>
+        <div forminput="关联老师" >
+            <div realtime ng-model="data.star_id" link-obj="star" search-type="star">
+                <input type="text" ng-model="data.star.names" search-type="Star" placeholder="搜索老师名称以选择关联老师">
+            </div>
+        </div>
+        <div forminput="LOGO图片">
+            <div uploadfile ng-model="data.logo" key="logo_id">
+                <div class="button btn btn-success button" ng-file-select ng-file-change="upload($files)">上传LOGO</div>
+            </div>
+        </div>
+        <div forminput="简介">
+            <input type="text" ng-model="data.intro" placeholder="简介">
+        </div>
+        <div forminput="海报图片">
+            <div uploadfile ng-model="data.poster" key="poster_id">
+                <div class="button btn btn-success button" ng-file-select ng-file-change="upload($files)">上传海报</div>
+            </div>
+        </div>
+        <div forminput="是否官方" ng-if="edit">
+            <ul selectcon ng-model="data.is_official">
+                <li selectvalue="true">是</li>
+                <li selectvalue="false">否</li>
+            </ul>
+        </div>
+        <div forminput="状态">
+            <ul selectcon ng-model="data.status">
+                <li selectvalue="0">待审核</li>
+                <li selectvalue="1">审核通过</li>
+                <li selectvalue="2">审核失败</li>
+                <li selectvalue="3">隐藏</li>
+            </ul>
+        </div>
+        <div class="form-group mt20 ">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

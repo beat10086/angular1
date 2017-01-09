@@ -1,0 +1,50 @@
+<div pagetitle>私信列表</div>
+<div goback back-key class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <button ng-if="filter.user_id" class="btn btn-success" ui-sref="im/p2p_receive()" ui-sref-opts="{reload: true,inherit :false}">返回全部</button>
+    <div class="form-group navbar-right" role="search">
+        <div realtime trimclear="true" ng-model="filter.user_id" search-type="user" class="inline-block">
+            <input type="text" ng-model="filter.keyword_user" placeholder="用户">
+        </div>
+        <button type="button" class="btn btn-primary" ng-click="search()">搜 索</button>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>内容</th>
+            <th>类型</th>
+            <th>发送者</th>
+            <th>接收者</th>
+            <th>创建时间</th>
+            <th ng-if="!filter.user_id">操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td>
+                <div ng-if="item.msg_type!=2">{{item.msg.text||item.msg.coin_amount}}</div>
+                <div class="img-con" ng-if="item.msg_type==2">
+                    <img ng-src="{{item.msg.image.url}}">
+                </div>
+            </td>
+            <td>{{item.msg_type | msg_type }}</td>
+            <td>
+                <a ui-sref="user/info({id:'{{item.sender.id}}'})">{{item.sender.nick||item.sender.username}}</a>
+            </td>
+            <td>
+                <a ui-sref="user/info({id:'{{item.receiver.id}}'})">{{item.receiver.nick||item.receiver.username}}</a>
+            </td>
+            <td>
+                {{item.create_time | datetime}}
+            </td>
+            <td ng-if="!filter.user_id">
+                <a ui-sref="im/p2p_receive({user_id:'{{item.sender.id}}',keyword_user:'{{item.sender.nick}}'})">只看发送者</a>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>

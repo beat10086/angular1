@@ -1,0 +1,8 @@
+ <div class="alert alert-{{theme}}" role="alert" ng-class="{show:alert}" ng-controller="alertCtrl">
+        <span class="glyphicon glyphicon-{{icon}}-sign"></span> {{text}}
+        <button type="button" class="close" ng-click="alerthide()"><span>×</span></button>
+        <span class="confirm-btn" ng-if="(theme=='confirm')">
+                <button type="button" class="btn btn-danger" ng-click="doConfirm()">确定</button>
+                <button type="button" class="btn btn-default" ng-click="alerthide()">取消</button>
+        </span>
+    </div>

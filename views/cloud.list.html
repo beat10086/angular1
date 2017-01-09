@@ -1,0 +1,92 @@
+<div pagetitle>云购列表</div>
+<div goback back-key="{{filter.navigation_id}}" class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>排序:</label>
+        <ul selectcon ng-model="filter.sort" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="create_time_asc">按添加时间顺序</li>
+            <li selectvalue="create_time_desc">按添加时间倒序</li>
+        </ul>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>商品</th>
+            <th>名称</th>
+            <th>当前期/最大期</th>
+            <th>已购买(正在支付)/最大份数</th>
+            <th>状态</th>
+            <th>有效小时</th>
+            <th>截止时间</th>
+            <th>是否自动生成下一期</th>
+            <th>是否隐藏</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td>
+                <div class="img-con " style="margin:auto">
+                    <img ng-src="{{item.image.url}}">
+                </div>
+            </td>
+            <td>
+                <a ui-sref="mall/inner_good_info({id:'{{item.id}}'})">{{item.name}}</a>
+            </td>
+            <td>{{item.cloud_num}}/{{item.max_cloud_num}}</td>
+            <td>
+                {{item.max_copies - item.book_remain_copies}} ({{item.remain_copies - item.book_remain_copies }})
+                /
+                {{item.max_copies}}
+            </td>
+            <td>{{item.status | cloudstatus}}</td>
+            <td>
+                总有效:{{item.closing_hours}}小时
+                <br/>
+                <span ng-class="{red:!item.is_deleted}" ng-if="item.remain_days == undefined">已结束</span>
+                <span ng-if="item.remain_days != undefined">有效剩余:{{item.remain_days}}天{{item.remain_hours}}时{{item.remain_minutes}}分{{item.remain_seconds}}秒</span>
+            </td>
+            <td>
+                开始时间:{{item.start_time | datetime}}
+                <br/> <span ng-class="{red:!item.is_deleted&&!item.remain_days}">截止时间:{{item.closing_time | datetime }}</span></td>
+            </td>
+            <td>
+                {{item.is_auto_cloud | booleanfilter }}
+            </td>
+            <td>
+                <ul selectcon ng-model="item.is_deleted" ng-change="toggleDelete($index)">
+                    <li selectvalue="true">隐藏</li>
+                    <li selectvalue="false">显示</li>
+                </ul>
+            </td>
+            <td class="t_bar">
+                <button class="btn btn-link" ng-click="cloudNext($index)">开启下期</button>
+                <a ui-sref="cloud/reward_list({good_id:'{{item.id}}'})">获奖列表</a>
+                <a ui-sref="cloud/info({good_id:'{{item.id}}',cloud_num:'{{item.cloud_num}}'})">详情</a>
+                <button class="btn btn-link" add-recommend data-type="cloud" data-object_id="{{item.id}}" data-object_type="cloud">推荐云购</button>
+                <button class="btn btn-link" ng-click="buyFunc($index)">购买</button>
+                <a ng-if="!filter.cloud_num" ui-sref='cloud/user_cloud_list({keyword_good:"{{item.name}}",good_id:"{{item.id}}",cloud_num:"{{item.cloud_num}}",currentPage:"1"})' ui-sref-opts="{reload: true,inherit :true}">购买记录</a>
+                <br>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>
+<div ui-modal class="buyPop" title="购买" ng-submit="buySubmit()">
+    <label><span class="red">*</span>购买用户:</label>
+    <div realtime trimclear="true" ng-model="buyData.user_id" search-type="user">
+        <input type="text" class="form-control"  placeholder="购买用户">
+    </div>
+    <br>
+    <label><span class="red">*</span>购买份数:</label>
+    <input type="number" class="form-control" ng-model="buyData.buy_copies" placeholder="购买份数">
+</div>
+<div ui-modal class="nextPop" title="开启下期" ng-submit="nextSubmit()">
+    <label>开启时间:</label>
+    <input type="text" dateselect class="form-control"  min-view="0" format="yyyy-mm-dd hh:ii:00" ng-model="nextData.start_time"  placeholder="开启时间(不填为立即开启)">
+</div>

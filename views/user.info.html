@@ -1,0 +1,147 @@
+<div pagetitle>
+    <span >用户详情</span>
+</div>
+<div goback>
+    <span >
+    <button class="btn btn-danger" ng-click="muteUser()"><span class="glyphicon glyphicon-volume-off"></span> 禁言</button>
+    <button class="btn btn-info" ng-click="userHonor()">头衔设定</button>
+    <button class="btn btn-default" add-recommend data-type="hot_user" data-object_id="{{data.id}}" data-object_type="user" >推荐达人</button>
+     <a class="btn btn-default" ng-href="#mall/address_list/{{data.id}}?keyword={{data.nick}}">地址列表</a>
+    </span>
+</div>
+<div class="form-content">
+    <form class="form-horizontal" role="form" ng-submit="submit()">
+        <div forminput="用户名" required>
+            <input type="text" readonly="" ng-model="data.username" placeholder="中文名称:长度范围2-20">
+        </div>
+        <div forminput="昵称">
+            <input type="text" ng-model="data.nick" placeholder="昵称：多个用“,”分隔,单个长度24，最多10个">
+        </div>
+        <div forminput="密码">
+            <input type="password" ng-model="data.password" placeholder="不修改则不填写">
+        </div>
+        <div forminput="确认密码">
+            <input type="password" ng-model="data.rePassword" placeholder="">
+        </div>
+        <div forminput="头像" required>
+            <div uploadfile ng-model="data.avatar" key="avatar_id" >
+                <div class="button btn btn-success button" ng-file-select ng-file-change="upload($files)">上传头像</div>
+            </div>
+        </div>
+        <div forminput="邮箱">
+            <input type="email" ng-model="data.email" placeholder="请输入邮箱">
+        </div>
+         <div forminput="邮箱是否验证" required>
+            <div class="form-line">{{data.email_verified|booleanfilter}}</div>
+        </div>
+        <div forminput="手机">
+            <input type="mobile" ng-model="data.mobile" placeholder="请输入手机">
+        </div>
+        <div forminput="性别">
+            <ul selectcon ng-model="data.gender">
+                <li selectvalue="m">男</li>
+                <li selectvalue="f">女</li>
+                <li selectvalue="i">中性</li>
+            </ul>
+        </div>
+        <div forminput="签名">
+            <input type="text"  ng-model="data.intro" placeholder="签名">
+        </div>
+        <div forminput="联系方式">
+            <input type="text"  ng-model="data.contact" placeholder="联系方式">
+        </div>
+        <div forminput="状态">
+            <ul selectcon ng-model="data.status">
+                <li selectvalue="1">正常</li>
+                <li selectvalue="2">禁用</li>
+            </ul>
+        </div>
+        <div forminput="内外用户">
+            <ul selectcon ng-model="data.is_internal">
+                <li selectvalue="true">内部</li>
+                <li selectvalue="false">外部</li>
+            </ul>
+        </div>
+         <div forminput="注册时间">
+            <div class="form-line">{{data.create_time | datetime}}</div>
+        </div>
+         <div forminput="更新时间">
+            <div class="form-line">{{data.update_time | datetime}}</div>
+        </div>
+         <div forminput="上次访问时间">
+            <div class="form-line">{{data.last_access_time | datetime}}</div>
+        </div>   
+         <div forminput="上次访问IP">
+            <div class="form-line" >{{data.last_ip}}</div>
+        </div>   
+        <div forminput="上次访问平台">
+            <div class="form-line" >{{data.last_platform.name}} {{data.last_platform.version}}</div>
+        </div> 
+        <div forminput="上次访问应用">
+            <div class="form-line" > {{data.last_app.name }} {{data.last_app.version}}</div>
+        </div> 
+        <div forminput="上次访问UA">
+            <div class="form-line" > {{data.last_user_agent }}</div>
+        </div>   
+        <div class="form-group mt20 ">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal fade mutebox">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">禁言</h4>
+            </div>
+            <div class="modal-body">
+                <label class="form-line">禁言天数: </label>
+                <input type="number" min='1' class="form-control" ng-model="mute.duration" placeholder="禁言天数">
+                <label class="form-line">原因: </label>
+                <input type="text" class="form-control" ng-model="mute.reason" placeholder="禁言原因">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" ng-click="muteSubmit()">确认</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<div nodata></div>
+<div class="modal fade honorbox">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">头衔设定</h4>
+            </div>
+            <div class="modal-body">
+                <label class="form-line">选择头衔: </label>
+                <ul selectcon ng-model="honor.select">
+                    <li selectvalue="1">船长</li>
+                    <li selectvalue="2">指挥官</li>
+                    <li selectvalue="3">大副</li>
+                    <li selectvalue="4">水手长</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" ng-click="honorSubmit()">确认</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+
+

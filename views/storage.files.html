@@ -1,0 +1,92 @@
+<div pagetitle>写真列表</div>
+<div goback back-key="{{filter.star_id}}" class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>排序:</label>
+        <ul selectcon ng-model="filter.sort" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="upload_time_asc">按上传时间顺序</li>
+            <li selectvalue="upload_time_desc">按上传时间倒序</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>引用类型:</label>
+        <ul selectcon ng-model="filter.referrer_type" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="{{object.key}}" ng-repeat="object in objectTypes">{{object.name}}</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>状态:</label>
+        <ul selectcon ng-model="filter.status" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="0">新上传</li>
+            <li selectvalue="1">审核通过</li>
+            <li selectvalue="2">审核失败</li>
+            <li selectvalue="3">隐藏</li>
+        </ul>
+    </div>
+   <div class="form-group navbar-right" role="search">
+        <div realtime trimclear="true" ng-model="filter.uploader_id" search-type="user" class="inline-block">
+            <input type="text" ng-model="filter.keyword" placeholder="提交请求的用户">
+        </div>
+        <button type="button" class="btn btn-primary" ng-click="search()">搜 索</button>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>文件对象</th>
+            <th>文件名</th>
+            <th>大小</th>
+            <th>引用者类型</th>
+            <th>上传者</th>
+            <th>上传时间</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td>
+                <div ng-if="item.mime.indexOf('image')>-1" class="img-con" ng-if="item" >
+                    <img ng-src="{{item.url}}">
+                </div>
+                <a ng-href="{{item.url}}" class="file-con file-con-mini" ng-if="item.mime.indexOf('image')==-1">
+                    <b>{{item.filename|filemime}}</b>
+                    <i>{{item.filename}}</i>
+                </a>
+            </td>
+            <td>
+                {{item.filename}}
+            </td>
+            <td>
+                {{item.size}}
+            </td>
+            <td>
+                {{item.referrer.type | objecttype}}
+            </td>
+            <td>
+                <a ui-sref="user/info({id:'{{item.uploader_id}}'})" title="查看上传者">{{item.uploader.nick||item.uploader.username}}</a>
+            </td>
+            <td>
+                 {{item.create_time | datetime}}
+            </td>
+            <td>
+                <ul selectcon ng-model="item.status" ng-change="changeStatus($index)">
+                    <li selectvalue="0">新上传</li>
+                    <li selectvalue="1">审核通过</li>
+                    <li selectvalue="2">审核失败</li>
+                    <li selectvalue="3">隐藏</li>
+                </ul>
+            </td>
+            <td class="t_bar">
+                <button class="btn btn-link" ng-click="delete($index)">删除</button>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>

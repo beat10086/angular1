@@ -1,0 +1,78 @@
+<div pagetitle>类别列表</div>
+<div goback back-key="{{filter.navigation_id}}" class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>排序:</label>
+        <ul selectcon ng-model="filter.sort" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="add_time_asc">按添加时间顺序</li>
+            <li selectvalue="add_time_desc">按添加时间倒序</li>
+            <li selectvalue="names_asc">按名字顺序</li>
+            <li selectvalue="names_desc">按名字倒序</li>
+            <li selectvalue="update_time_asc">按更新时间升序</li>
+            <li selectvalue="update_time_desc">按更新时间倒序</li>
+            <li ng-show="filter.navigation_id" selectvalue="position_asc">按自定义升序</li>
+            <li ng-show="filter.navigation_id" selectvalue="position_desc">按自定义倒序</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>状态:</label>
+        <ul selectcon ng-model="filter.status" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="1">正常</li>
+            <li selectvalue="2">隐藏</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>所属导航:</label>
+        <ul selectcon ng-model="filter.navigation_id" ng-change="updateNav()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="{{nav.id}}" ng-repeat="nav in filternav">{{nav.name}}</li>
+        </ul>
+    </div>
+    
+    <div class="form-group navbar-right" role="search">
+        <input type="text" class="form-control" ng-model="filter.keyword" placeholder="搜索">
+        <button type="button" class="btn btn-primary" ng-click="search()">搜 索</button>
+        <a ui-sref="mall/add_category" class="btn btn-default">添加类别</a>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th ng-if="filter.navigation_id">位置</th>
+            <th>所属导航</th>
+            <th>类别名称</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td ng-if="filter.navigation_id">
+                {{item.position}}
+            </td>
+            <td>
+                {{item.navigation.name}}
+            </td>
+            <td>
+                {{item.name}}
+            </td>            
+            <td>
+                <ul selectcon ng-model="item.status" ng-change="changeStatus($index)">
+                    <li selectvalue="1">正常</li>
+                    <li selectvalue="2">隐藏</li>
+                </ul>
+            </td>
+            <td class="t_bar">
+                 <a ui-sref="mall/good_list({navigation_id:'{{item.navigation_id}}',category_id:'{{item.id}}'})">下属商品</a>
+                 <a ui-sref="mall/category_info({id:'{{item.id}}'})">详情</a>
+                <div ng-if="filter.navigation_id" positions="mall_category" position-now="{{item.position}}"  data-id="{{item.id}}"></div>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>

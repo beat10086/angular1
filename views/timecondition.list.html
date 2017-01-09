@@ -1,0 +1,67 @@
+<div pagetitle>时间条件对象列表</div>
+<div goback back-key class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>类型:</label>
+        <ul selectcon ng-model="filter.type" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="1">音频电台</li>
+            <li selectvalue="2">免费喇叭</li>
+            <li selectvalue="3">话题审核</li>
+        </ul>
+    </div>
+    <div class="form-group navbar-right" role="search">
+        <a ui-sref="timecondition/add" class="btn btn-default">创建时间对象</a>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>对象标题</th>
+            <th>对象文件</th>
+            <th>类型</th>
+            <th>月</th>
+            <th>日</th>
+            <th>周</th>
+            <th>小时</th>
+            <th>分钟</th>
+            <th>当前时间是否符合</th>
+            <th>创建时间</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td>
+                {{item.obj.title}}
+            </td>
+            <td>
+                <a target="_blank" ng-if="item.obj.audio" ng-href="{{item.obj.audio.url}}" class="file-con file-con-mini">
+                    <b>{{item.obj.audio.filename | filemime}}</b>
+                </a>
+            </td>
+            <td>
+                {{{1:'音频电台',2:'免费喇叭',3:'话题审核'}[item.type] }}
+            </td>
+            <td>
+                {{item.month.toString() |isunlimit}}
+            </td>
+            <td>{{item.day.toString() |isunlimit}}</td>
+            <td>{{item.week.toString() |weeklist}}</td>
+            <td>{{item.hour.toString() |isunlimit}}</td>
+            <td>
+                {{item.minute.toString() |isunlimit}}
+            </td>
+            <td>{{item.is_meet | booleanfilter}}</td>
+            <td>{{item.create_time.toString() |datetime}}</td>
+            <td class="t_bar">
+                <a ui-sref="timecondition/info({id:'{{item.id}}'})">详情</a>
+                <button class="btn btn-link" ng-click="delete($index)">删除</button>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>

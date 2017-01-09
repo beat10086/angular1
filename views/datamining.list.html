@@ -1,0 +1,342 @@
+<div pagetitle>数据统计—{{filter.object_type | objecttype}}</div>
+<div goback back-key class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>统计粒数:</label>
+        <ul selectcon ng-model="filter.section" ng-change="search()">
+            <li selectvalue="all">总和</li>
+            <li selectvalue="month">月</li>
+            <li selectvalue="week">周</li>
+            <li selectvalue="day">天</li>
+            <li selectvalue="hour">小时</li>
+        </ul>
+    </div>
+    <div class="form-group " ng-if="filter.section!='all'">
+        <label>时间段:</label>
+        <input type="text" ng-if="filter.section=='hour'" dateselect min-view="1" format="yyyy-mm-dd hh:00" class="form-control" ng-model="filter.time" placeholder="请选择">
+        <input type="text" ng-if="filter.section=='day'" dateselect min-view="2" format="yyyy-mm-dd" class="form-control" ng-model="filter.time" placeholder="请选择">
+        <input type="text" ng-if="filter.section=='week'" dateselect min-view="2" format="yyyy-mm-dd" class="form-control" ng-model="filter.time" placeholder="请选择">
+        <input type="text" ng-if="filter.section=='month'" dateselect start-view="3" max-view="4" min-view="3" format="yyyy-mm" class="form-control" ng-model="filter.time" placeholder="请选择">
+        <button type="button" class="btn btn-primary" ng-click="search()">搜 索</button>
+    </div>
+    <div class="form-group">
+        <div class="form-group">
+            <label>排序:</label>
+            <ul selectcon ng-model="filter.sort" ng-change="search()" ng-if="filter.object_type=='user'">
+                <li selectvalue="">默认</li>
+                <li selectvalue="topic_count">话题数</li>
+                <li selectvalue="post_count">回帖数</li>
+                <li selectvalue="like_count">被赞数</li>
+                <li selectvalue="favor_count">被收藏数</li>
+                <li selectvalue="follow_count">被关注数</li>
+                <li selectvalue="reward">打赏金币</li>
+                <li selectvalue="rewarded">被打赏金币</li>
+                <li selectvalue="live_point">活跃度</li>
+                <li selectvalue="rich_point">富裕度</li> 
+            </ul>
+            <ul selectcon ng-model="filter.sort" ng-change="search()" ng-if="filter.object_type=='star'">
+                <li selectvalue="">默认</li>
+                <li selectvalue="view_count">浏览数</li>
+                <li selectvalue="favor_count">收藏数</li>
+                <li selectvalue="group_count">小组数</li>
+            </ul>
+            <ul selectcon ng-model="filter.sort" ng-change="search()" ng-if="filter.object_type=='group'">
+                <li selectvalue="">默认</li>
+                <li selectvalue="view_count">浏览数</li>
+                <li selectvalue="member_count">成员数</li>
+                <li selectvalue="topic_count">话题数</li>
+            </ul>
+            <ul selectcon ng-model="filter.sort" ng-change="search()" ng-if="filter.object_type=='topic'">
+                <li selectvalue="">默认</li>
+                <li selectvalue="view_count">浏览数</li>
+                <li selectvalue="favor_count">收藏数</li>
+                <li selectvalue="like_count">被赞数</li>
+                <li selectvalue="post_count">回帖数</li>
+            </ul>
+            <ul selectcon ng-model="filter.sort" ng-change="search()" ng-if="filter.object_type=='order_good' || filter.object_type=='order_style'">
+                <li selectvalue="">默认</li>
+                <li selectvalue="status_0_count">创建数</li>
+                <li selectvalue="status_10_count">付款数</li>
+                <li selectvalue="status_30_count">发货数</li>
+                <li selectvalue="status_40_count">收货数</li>
+                <li selectvalue="status_50_count">完成数</li>
+                <li selectvalue="status_45_count">申请退货数</li>
+                <li selectvalue="status_80_count">退货数</li>
+                <li selectvalue="status_60_count">失效数</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- 用户表 -->
+<table class="table table-bordered table-striped" ng-if="filter.object_type=='user'">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th ng-if="filter.section!='all'">时间段</th>
+            <th>名称</th>
+            <th>话题数</th>
+            <th>回帖数</th>
+            <th>被赞数</th>
+            <th>被收藏数</th>
+            <th>被关注数</th>
+            <th>打赏金币</th>
+            <th>被打赏金币</th>
+            <th>活跃度</th>
+            <th>富裕度</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td ng-if="filter.section!='all'">
+                {{item.hour || item.day ||item.week ||item.month }}
+            </td>
+            <td>
+                <a ui-sref="{{item.object_type}}/info({id:'{{item.object_id}}'})">{{item.object | objectname}}</a>
+            </td>
+            <td>
+                {{item.stat.topic_count||0}}
+            </td>
+            <td>
+                {{item.stat.post_count||0}}
+            </td>
+            <td>
+                {{item.stat.like_count||0}}
+            </td>
+            <td>
+                {{item.stat.favor_count||0}}
+            </td>
+            <td>
+                {{item.stat.follow_count||0}}
+            </td>
+            <td>
+                {{item.stat.reward||0}}
+            </td>
+            <td>
+                {{item.stat.rewarded||0}}
+            </td>
+            <td>
+                {{item.stat.live_point||0}}
+            </td>
+            <td>
+                {{item.stat.rich_point||0}}
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<!-- 老师表 -->
+<table class="table table-bordered table-striped" ng-if="filter.object_type=='star'">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th ng-if="filter.section!='all'">时间段</th>
+            <th>名称</th>
+            <th>浏览数</th>
+            <th>收藏数</th>
+            <th>小组数</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td ng-if="filter.section!='all'">
+                {{item.hour || item.day ||item.week ||item.month }}
+            </td>
+            <td>
+                <a ui-sref="{{item.object_type}}/info({id:'{{item.object_id}}'})">{{item.object | objectname}}</a>
+            </td>
+            <td>
+                {{item.stat.view_count||0}}
+            </td>
+            <td>
+                {{item.stat.favor_count||0}}
+            </td>
+            <td>
+                {{item.stat.group_count||0}}
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<!-- 小组表 -->
+<table class="table table-bordered table-striped" ng-if="filter.object_type=='group'">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th ng-if="filter.section!='all'">时间段</th>
+            <th>名称</th>
+            <th>创建者</th>
+            <th>浏览数</th>
+            <th>成员数</th>
+            <th>话题数</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td ng-if="filter.section!='all'">
+                {{item.hour || item.day ||item.week ||item.month }}
+            </td>
+            <td>
+                <a ui-sref="{{item.object_type}}/info({id:'{{item.object_id}}'})">{{item.object | objectname}}</a>
+            </td>
+            <td>
+                <a ui-sref="user/info({id:'{{item.object.creator_id}}'})">{{item.object.creator | objectname}}</a>
+            </td>
+            <td>
+                {{item.stat.view_count||0}}
+            </td>
+            <td>
+                {{item.stat.member_count||0}}
+            </td>
+            <td>
+                {{item.stat.topic_count||0}}
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+
+<!-- 话题表 -->
+<table class="table table-bordered table-striped" ng-if="filter.object_type=='topic'">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th ng-if="filter.section!='all'">时间段</th>
+            <th>名称</th>
+            <th>创建者</th>
+            <th>浏览数</th>
+            <th>收藏数</th>
+            <th>被赞数</th>
+            <th>回帖数</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td ng-if="filter.section!='all'">
+                {{item.hour || item.day ||item.week ||item.month }}
+            </td>
+            <td>
+                <a ui-sref="{{item.object_type}}/info({id:'{{item.object_id}}'})">{{item.object | objectname}}</a>
+            </td>
+            <td>
+                <a ui-sref="user/info({id:'{{item.object.creator_id}}'})">{{item.object.creator | objectname}}</a>
+            </td>
+            <td>
+                {{item.stat.view_count||0}}
+            </td>
+            <td>
+                {{item.stat.favor_count||0}}
+            </td>
+             <td>
+                {{item.stat.like_count||0}}
+            </td>
+            <td>
+                {{item.stat.post_count||0}}
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+
+<!-- 订单商品与款式表 -->
+<table class="table table-bordered table-striped" ng-if="filter.object_type=='order_good' || filter.object_type=='order_style'">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th ng-if="filter.section!='all'">时间段</th>
+            <th>名称</th>
+            <th ng-if="filter.object_type=='order_style'">款式名称</th>
+            <th>创建数</th>
+            <th>付款数</th>
+            <th>发货数</th>
+            <th>收货数</th>
+            <th>完成数</th>
+            <th>申请退货数</th>
+            <th>退货数</th>
+            <th>失效数</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td ng-if="filter.section!='all'">
+                {{item.hour || item.day ||item.week ||item.month }}
+            </td>
+            <td>
+                <a ui-sref="good/info({id:'{{item.object && item.object.id}}'})">{{item.object | objectname}}</a>
+            </td>
+            <td ng-if="filter.object_type=='order_style'">
+                {{item.object && item.object.style_name}}
+            </td>
+            <td>
+                {{item.stat.status_0_count||0}}
+            </td>
+            <td>
+                {{item.stat.status_10_count||0}}
+            </td>
+             <td>
+                {{item.stat.status_30_count||0}}
+            </td>
+            <td>
+                {{item.stat.status_40_count||0}}
+            </td>
+            <td>
+                {{item.stat.status_50_count||0}}
+            </td>
+            <td>
+                {{item.stat.status_45_count||0}}
+            </td>
+            <td>
+                {{item.stat.status_80_count||0}}
+            </td>
+            <td>
+                {{item.stat.status_60_count||0}}
+            </td>
+        </tr>
+        <tr>
+            <td ng-if="filter.section!='all' && filter.object_type=='order_style'" colspan="3">
+                总计
+            </td>
+            <td ng-if="(filter.section!='all' && filter.object_type!='order_style') || (filter.section=='all' && filter.object_type=='order_style')" colspan="2">
+                总计
+            </td>
+            <td ng-if="filter.section=='all' && filter.object_type!='order_style'" colspan="1">
+                总计
+            </td>
+            <td>
+                {{counts.status_0_count||0}}
+            </td>
+            <td>
+                {{counts.status_10_count||0}}
+            </td>
+             <td>
+                {{counts.status_30_count||0}}
+            </td>
+            <td>
+                {{counts.status_40_count||0}}
+            </td>
+            <td>
+                {{counts.status_50_count||0}}
+            </td>
+            <td>
+                {{counts.status_45_count||0}}
+            </td>
+            <td>
+                {{counts.status_80_count||0}}
+            </td>
+            <td>
+                {{counts.status_60_count||0}}
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+
+<div nodata></div>

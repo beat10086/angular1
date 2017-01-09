@@ -1,0 +1,54 @@
+<div pagetitle>新增用户分析</div>
+<div goback back-key class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>统计粒度:</label>
+        <ul selectcon ng-model="filter.time_type" ng-change="search()">
+            <li selectvalue="month">月</li>
+            <li selectvalue="week">周</li>
+            <li selectvalue="day">天</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>用户群:</label>
+        <ul selectcon ng-model="filter.metric_type" ng-change="search()">
+            <li selectvalue="cloud">云购购买</li>
+            <li selectvalue="good">商城购买</li>
+        </ul>
+    </div>
+<!--     <div class="form-group">
+        <label>开始时间:</label>
+        <input type="text" dateselect min-view="1" format="yyyy-mm-dd" class="form-control" ng-change="datesearch()" ng-model="filter.start_date" placeholder="请选择">
+        <label>结束时间:</label>
+        <input type="text" dateselect min-view="1" format="yyyy-mm-dd" class="form-control" ng-change="datesearch()" ng-model="filter.end_date" placeholder="请选择">
+    </div>
+ --></div>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>时间段</th>
+            <th>新增人数</th>
+            <th>当{{filter.time_type | timetype}}购买</th>
+            <th>1{{filter.time_type | timetype}}后</th>
+            <th>2{{filter.time_type | timetype}}后</th>
+            <th>3{{filter.time_type | timetype}}后</th>
+            <th>4{{filter.time_type | timetype}}后</th>
+            <th>5{{filter.time_type | timetype}}后</th>
+            <th>6{{filter.time_type | timetype}}后</th>
+            <th>7{{filter.time_type | timetype}}后</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in metric_percents">
+            <td>{{item.start_time|datetime}}<br>~ {{item.end_time|datetime}}</td>
+            <td>{{item.newuser_count||0}}</td>
+            <td ng-repeat="percent in item.percents track by $index">
+                {{percent}}%
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>

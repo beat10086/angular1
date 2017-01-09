@@ -1,0 +1,70 @@
+<div pagetitle>云购购买记录</div>
+<div goback class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>排序:</label>
+        <ul selectcon ng-model="filter.sort" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="buy_timeasc">按购买时间顺序</li>
+            <li selectvalue="buy_time_desc">按购买时间倒序</li>
+        </ul>
+    </div>
+    <button ng-if="params.good_id" class="btn btn-success" ui-sref="cloud/user_cloud_list({keyword_good:'',good_id:'',cloud_num:'',currentPage:'1'})" ui-sref-opts="{reload: true,inherit :true}">全部商品</button>
+    <button ng-if="params.user_id" class="btn btn-success" ui-sref="cloud/user_cloud_list({keyword_user:'',user_id:'',currentPage:'1'})" ui-sref-opts="{reload: true,inherit :true}">全部用户</button>
+    <button ng-if="params.cloud_num" class="btn btn-success" ui-sref="cloud/user_cloud_list({cloud_num:'',currentPage:'1'})" ui-sref-opts="{reload: true,inherit :true}">看所有期</button>
+    <div class="form-group navbar-right" role="search">
+        <div realtime trimclear="true" ng-model="filter.good_id" search-type="good" class="inline-block">
+            <input type="text" class="form-control" ng-model="filter.keyword_good" placeholder="所购商品">
+        </div>
+        <input type="text" ng-show="filter.good_id" class="form-control " ng-model="filter.cloud_num" placeholder="云购期数">
+        <div realtime trimclear="true" ng-model="filter.user_id" search-type="user" class="inline-block">
+            <input type="text" ng-model="filter.keyword_user" placeholder="购买用户">
+        </div>
+        <button type="button" class="btn btn-primary" ng-click="search()">搜 索</button>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>云购商品</th>
+            <th>期数</th>
+            <th>图片</th>
+            <th>购买数量</th>
+            <th>用户</th>
+            <th>购买时间</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td>
+                <a ui-sref="cloud/info({good_id:'{{item.cloud.id}}',cloud_num:'{{item.cloud.cloud_num}}'})">{{item.cloud.name}}</a>
+            </td>
+            <td>第{{item.cloud.cloud_num}}期</td>
+            <td>
+                <div class="img-con " style="margin:auto">
+                    <img ng-src="{{item.cloud.image.url}}">
+                </div>
+            </td>
+            <td>
+                {{item.buy_copies}}
+            </td>
+            <td>
+                <a ui-sref="user/info({id:'{{item.user.id}}'})">{{item.user |internal}}</a>
+            </td>
+            <td>
+                {{item.buy_time | datetime }} <br>
+                  <span class="note">{{item.buy_time  }} (UTC)</span>
+            </td>
+            <td class="t_bar">
+                <a ng-if="!filter.cloud_num" ui-sref="cloud/user_cloud_list({keyword_good:'{{item.cloud.name}}',good_id:'{{item.good_id}}',cloud_num:'{{item.cloud_num}}',currentPage:'1'})" ui-sref-opts="{reload: true,inherit :true}">只看该期</a>
+                <a ng-if="!filter.user_id" ui-sref="cloud/user_cloud_list({keyword_user:'{{item.user.username}}',user_id:'{{item.user_id}}',currentPage:'1'})" ui-sref-opts="{reload: true,inherit :true}">只看该用户</a>
+                <a ng-if="!filter.good_id" ui-sref="cloud/user_cloud_list({good_id:'{{item.good_id}}',currentPage:'1'})" ui-sref-opts="{reload: true,inherit :true}">只看该商品</a>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>

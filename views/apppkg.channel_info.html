@@ -1,0 +1,30 @@
+<div pagetitle>
+    <span ng-if="edit">渠道详情</span>
+    <span ng-if="!edit">添加渠道</span>
+</div>
+<div goback></div>
+<div class="form-content">
+    <form class="form-horizontal" role="form" ng-submit="submit()">
+        <div forminput="渠道名称" required ng-if="edit">
+            <div class="form-line" >{{data.name}}</div>
+        </div>
+        <div forminput="渠道名称" required ng-if="!edit">
+             <input type="text" ng-model="data.name" placeholder="渠道名称" >
+        </div>
+        <div forminput="渠道描述" required>
+            <textarea style="height:300px" ng-model="data.desc" placeholder="作品信息:长度范围10-10000" rows="3"></textarea>
+        </div>
+        <div forminput="状态" required>
+            <ul selectcon ng-model="data.status">
+                <li selectvalue="1">正常</li>
+                <li selectvalue="2">禁用</li>
+            </ul>
+        </div>
+        <div class="form-group mt20 ">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

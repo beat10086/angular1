@@ -1,0 +1,56 @@
+<div pagetitle>
+    <span ng-if="edit">安装包详情</span>
+    <span ng-if="!edit">添加安装包</span>
+</div>
+<div goback></div>
+<div class="form-content">
+    <form class="form-horizontal" role="form" ng-submit="submit()">
+        <div forminput="平台" required>
+            <div class="form-line" ng-if="edit">{{data.platform}}</div>
+            <ul selectcon ng-model="data.platform" ng-if="!edit">
+                <li selectvalue="android">Android</li>
+                <li selectvalue="ios">IOS</li>
+                <li selectvalue="wp">WP</li>
+            </ul>
+        </div>
+        <div forminput="渠道" required>
+            <div class="form-line" ng-if="edit">{{data.channel}}</div>
+            <ul selectcon ng-model="data.channel" ng-if="!edit">
+                <li ng-repeat="channel in channels" selectvalue="{{channel.name}}">{{channel.name}}</li>
+            </ul>
+        </div>
+        <div forminput="版本" required ng-if="edit">
+            <div class="form-line" >{{data.version}}</div>
+        </div>
+        <div forminput="版本" required ng-if="!edit">
+             <input type="text" ng-model="data.version" placeholder="版本号" >
+        </div>
+        <div forminput="更新内容" required>
+            <textarea style="height:300px" ng-model="data.changelog" placeholder="作品信息:长度范围10-10000" rows="3"></textarea>
+        </div>
+        <div forminput="云存储">
+            <ul selectcon ng-model="uploadConfig.place">
+                <li selectvalue="1">服务器</li>
+                <li selectvalue="2">阿里云OSS</li>
+                <li selectvalue="3">AWS S3</li>
+            </ul>
+        </div>
+        <div forminput="安装包" required>
+            <div uploadfile ng-model="data.file" key="file_id" >
+                <div class="button btn btn-success button" ng-file-select ng-file-change="upload($files)">添加附件</div>
+            </div>
+        </div>
+        <div forminput="图片是否涉黄" ng-if="data.image_id.length">
+            <ul selectcon ng-model="data.is_image_sexy">
+                <li selectvalue="true" selected=>是</li>
+                <li selectvalue="false">否</li>
+            </ul>
+        </div>
+        <div class="form-group mt20 ">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

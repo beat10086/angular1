@@ -1,0 +1,48 @@
+<div pagetitle>
+    <span ng-if="edit">赠品详情</span>
+    <span ng-if="!edit">添加赠品</span>
+</div>
+<div goback>
+    <span ng-if="edit">
+    </span>
+</div>
+<div class="form-content">
+    <form class="form-horizontal" role="form" ng-submit="submit()">
+        <div forminput="赠品名称" required>
+            <input type="text" ng-model="data.package_name" placeholder="商品货号">
+        </div>
+        <div forminput="包含物品" required>
+            <table class="table table-bordered table-striped ">
+                <tr>
+                    <th><span class="red">*</span>名称</th>
+                    <th><span class="red">*</span>数量</th>
+                    <th>操作</th>
+                </tr>
+                <tr ng-repeat="(j,gift) in data.gifts track by $index">
+                    <td>
+                        <input type="text" required class="form-control" ng-model="gift.name" placeholder="名称">
+                    </td>
+                    <td>
+                        <input type="text"  class="form-control" ng-model="gift.num" placeholder="数量">
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-link" ng-if="!plist[j]" ng-click="deleteRow(j)">删除</button>
+                        <button type="button" class="btn btn-link" ng-if="!$first" ng-click="setP(j,-1)">上移</button>
+                        <button type="button" class="btn btn-link" ng-if="!$last" ng-click="setP(j,1)">下移</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        <button type="button" class="btn btn-default" ng-click="addStyleRow()">添加</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="form-group mt20 ">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

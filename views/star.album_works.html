@@ -1,0 +1,78 @@
+<div pagetitle>专辑下的作品</div>
+<div goback back-key="{{filter.album_id}}" class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group navbar-right" role="search">
+        <button ng-click="addwork()" class="btn btn-default">插入作品</button>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>位置</th>
+            <th>作品名称</th>
+            <th>发行号</th>
+            <th >封面图片</th>
+            <th>封面是否涉黄</th>
+            <th>添加时间</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td>
+                {{item.position}}
+            </td>
+            <td>
+                <a ui-sref="star/work_info({id:'{{item.work_id}}'})" title="作品详情"> {{item.work.title}}</a>
+            </td>
+            <td>
+                {{item.work.issue_no}}
+            </td>
+            <td>
+                <div class="img-con" ng-if="item.work.cover">
+                    <img ng-src="{{item.work.cover.url}}">
+                </div>
+            </td>
+            <td>
+                {{item.work.is_cover_sexy|sexfilter}}
+            </td>
+            <td>
+                {{item.create_time | datetime}}
+            </td>
+            <td>
+                {{item.work.status | display }}
+            </td>
+            <td>
+                <button class="btn btn-link" ng-click="remove($index)">移除</button>
+                <div positions="album_work" position-now="{{item.position}}" data-album_id="{{filter.album_id}}" data-work_id="{{item.work_id}}"></div>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+    <div nodata></div>
+<div class="modal fade addAlbum">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">插入作品</h4>
+            </div>
+            <div class="modal-body">
+                <div realtime  ng-model="add.work_id"  search-type="work">
+                <input type="text" placeholder="搜索作品名称以添加作品">
+            </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" ng-click="addAlbumSubmit()">确认</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->

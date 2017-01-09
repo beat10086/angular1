@@ -1,0 +1,57 @@
+<div pagetitle>应用配置列表</div>
+<div goback back-key class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>平台:</label>
+        <ul selectcon ng-model="filter.platform" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="android">Android</li>
+            <li selectvalue="ios">IOS</li>
+            <li selectvalue="wp">WP</li>
+            <li selectvalue="admin">ADMIN</li>
+            <li selectvalue="web">WEB</li>
+        </ul>
+    </div>
+    <div class="form-group navbar-right" role="search">
+        <a ui-sref="appconfig/update" class="btn btn-default">更新配置</a>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>平台</th>
+            <th>版本</th>
+            <th>配置</th>
+            <th>添加时间</th>
+            <th>更新时间</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="config in data">
+            <td>{{config.platform}}
+            </td>
+            <td>
+                {{config.version}}
+            </td>
+            <td>
+                <pre>{{config.data}}</pre>
+            </td>
+            <td>
+                {{config.create_time | datetime}}
+            </td>
+             <td>
+                {{config.update_time | datetime}}
+            </td>
+            <td>{{config.status | isrelease}}</td>
+            <td>
+                <button ng-if="!config.status" class="btn btn-link" ng-click="release($index)">发布</button>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>

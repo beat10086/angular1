@@ -1,0 +1,86 @@
+<div ng-if="metric_type=='cloud'" pagetitle>云购指标统计</div>
+<div ng-if="metric_type=='good'" pagetitle>商城指标统计</div>
+<div goback back-key class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>查看方式</label>
+        <ul selectcon ng-model="filter.view_type" ng-change="toggleView()">
+            <li selectvalue="info">阶段总和</li>
+            <li selectvalue="list">阶段列表</li>
+        </ul>
+    </div>
+    <div class="form-group" ng-if="filter.view_type=='list'">
+        <label>统计粒度:</label>
+        <ul selectcon ng-model="filter.time_type" ng-change="search()">
+            <li selectvalue="month">月</li>
+            <li selectvalue="week">周</li>
+            <li selectvalue="day">天</li>
+            <li selectvalue="hour">小时</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>用户群:</label>
+        <ul selectcon ng-model="filter.newuser" ng-change="search()">
+            <li selectvalue="false">全部</li>
+            <li selectvalue="true">新增</li>
+        </ul>
+    </div>
+    <div class="form-group" ng-if="filter.view_type=='info'">
+        <label>开始时间:</label>
+        <input type="text" dateselect min-view="1" format="yyyy-mm-dd hh:00:00" class="form-control" ng-change="datesearch()" ng-model="filter.start_time" placeholder="请选择">
+        <label>结束时间:</label>
+        <input type="text" dateselect min-view="1" format="yyyy-mm-dd hh:00:00" class="form-control" ng-change="datesearch()" ng-model="filter.end_time" placeholder="请选择">
+    </div>
+</div>
+
+<table class="table table-bordered table-striped" ng-if="metric_type=='cloud'">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>参与人数</th>
+            <th>购买分数</th>
+            <th>购买次数</th>
+            <th>开始时间</th>
+            <th>结束时间</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td>{{item.data.users||0}}</td>
+            <td>{{item.data.copies||0}}</td>
+            <td>{{item.data.times||0}}</td>
+            <td>{{item.start_time | datetime}}</td>
+            <td>{{item.end_time | datetime}}</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+
+<table class="table table-bordered table-striped" ng-if="metric_type=='good'">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>参与人数</th>
+            <th>订单数</th>
+            <th>商品数</th>
+            <th>金额</th>
+            <th>开始时间</th>
+            <th>结束时间</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td>{{item.data.users||0}}</td>
+            <td>{{item.data.orders||0}}</td>
+            <td>{{item.data.goods||0}}</td>
+            <td>{{item.data.pay_amount||0}}</td>
+            <td>{{item.start_time | datetime}}</td>
+            <td>{{item.end_time | datetime}}</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>

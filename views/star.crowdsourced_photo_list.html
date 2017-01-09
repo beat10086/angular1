@@ -1,0 +1,74 @@
+<div pagetitle>众包写真列表</div>
+<div goback back-key="{{filter.star_id}}" class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>排序:</label>
+        <ul selectcon ng-model="filter.sort" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="upload_time_asc">按添加时间顺序</li>
+            <li selectvalue="upload_time_desc">按添加时间倒序</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>是否已检测:</label>
+        <ul selectcon ng-model="filter.is_detected" ng-change="search()">
+            <li selectvalue="" >默认</li>
+            <li selectvalue="true">已检测</li>
+            <li selectvalue="false">未检测</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>内外部用户:</label>
+        <ul selectcon ng-model="filter.is_internal" ng-change="search()">
+            <li selectvalue="" >默认</li>
+            <li selectvalue="1">内部用户</li>
+            <li selectvalue="0">外部用户</li>
+        </ul>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>老师名字</th>
+            <th >老师头像</th>
+            <th >众包写真</th>
+            <th>是否已检测</th>
+            <th>上传者</th>
+            <th>添加时间</th>
+            <th >操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="photo in data">
+            <td>
+                 <a ui-sref="star/info({id:'{{photo.star.id}}'})" title="查看老师">{{photo.star.names.join(',')}}</a>
+            </td>
+            <td>
+                <div class="img-con" ng-if="photo.star.avatars[0]" facepp image-id="{{photo.star.avatars[0].id}}" star-ids="{{photo.star.id}}">
+                    <img ng-src="{{photo.star.avatars[0].url}}">
+                </div>
+            </td>
+            <td>
+                <div class="img-con" ng-if="photo.image" >
+                    <img ng-src="{{photo.image.url}}">
+                </div>
+            </td>
+            <td>
+                {{photo.is_detected|sexfilter}}
+            </td>
+            <td>
+                <a href="">{{photo.uploader.nick||photo.uploader.username}}</a>
+            </td>
+            <td>
+                {{photo.create_time | datetime}}
+            </td>
+            <td class="t_bar">
+                <button class="btn btn-link" ng-click="delete($index)">删除</button>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+    <div nodata></div>

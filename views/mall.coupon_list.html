@@ -1,0 +1,106 @@
+<div pagetitle>优惠券列表 <span ng-if="filter.keyword">— {{filter.keyword}}</span></div>
+<div goback back-key class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>排序:</label>
+        <ul selectcon ng-model="filter.sort" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="create_time_asc">按添加时间顺序</li>
+            <li selectvalue="create_time_desc">按添加时间倒序</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>获取方式:</label>
+        <ul selectcon ng-model="filter.by_way" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="invite">邀请</li>
+            <li selectvalue="exchange">兑换</li>
+            <li selectvalue="system">系统</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>是否已用:</label>
+        <ul selectcon ng-model="filter.is_used" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="true">是</li>
+            <li selectvalue="false">否</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>是否可用:</label>
+        <ul selectcon ng-model="filter.is_usable" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="true">是</li>
+            <li selectvalue="false">否</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>是否过期:</label>
+        <ul selectcon ng-model="filter.is_expired" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="true">是</li>
+            <li selectvalue="false">否</li>
+        </ul>
+    </div>
+    <div class="form-group navbar-right" role="search">
+        <div realtime trimclear="true" ng-model="filter.user_id" search-type="user" class="inline-block">
+            <input type="text" ng-model="filter.keyword" placeholder="提交请求的用户">
+        </div>
+        <button type="button" class="btn btn-primary" ng-click="search()">搜 索</button>
+        <button type="button" class="btn btn-danger" ng-click="multiCheck.mutiSubmit()">批量删除</button>
+    </div>
+    <button style="margin-top:5px;" ng-if="params.user_id" class="btn btn-success" ui-sref="mall/coupon_list()" ui-sref-opts="{reload: true,inherit :false}">返回全部</button>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>
+                <label class="checkbox-inline">
+                    <input type="checkbox" ng-change="multiCheck.checkAll()" ng-model="checkedAll"><b>选择</b>
+                </label>
+            </th>
+            <th>拥有者</th>
+            <th>类型</th>
+            <th>面值</th>
+            <th>发放时间</th>
+            <th>是否已用</th>
+            <th>获取方式</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td>
+                <input type="checkbox" value="{{item.id}}" ng-model="item.check" ng-click="multiCheck.toggleCheck($index,$event)">
+            </td>
+            <td>
+                <a ui-sref="user/info({id:'{{item.user_id}}'})">{{item.user.nick||tiem.user.username}}</a>
+            </td>
+            <td>
+                {{item.type}}
+            </td>
+            <td>
+                {{item.data.value | price}}
+            </td>
+            <td>
+                {{item.create_time | datetime }}
+            </td>
+            <td ng-if="item.is_used">是 </td>
+            <td ng-if="!item.is_used">否 </td>
+            <td>
+                方式：{{item.by.way | couponway }}
+                <div ng-if="item.by.device">设备：{{item.by.device}}</div>
+                <div ng-if="item.by.ip">IP：{{item.by.ip}}</div> 
+                <div ng-if="item.by.user_id">用户：<a ui-sref="user/info({id:'{{item.by.user_id}}'})">{{item.by.user.nick}}</a></div> 
+            </td>
+            <td class="t_bar">
+                <button class="btn btn-link" ng-click="delete($index)">删除</button>
+                <a ng-if="!filter.user_id" ui-sref="mall/coupon_list({user_id:'{{item.user_id}}',keyword:'{{item.user.username}}'})" ui-sref-opts="{reload: true,inherit :false}">只看该用户</a>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>

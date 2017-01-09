@@ -1,0 +1,55 @@
+<div pagetitle>
+    <span>单页爬虫任务详情</span>
+</div>
+<div goback>
+    <a class="btn btn-default" ng-href="#/topic/info/{{data.topic_id}}">查看话题</a>
+</div>
+<div class="form-content">
+    <form class="form-horizontal" role="form" ng-submit="submit()">
+        <div forminput="网页链接" required>
+            <div class="form-line"><a ng-href="{{data.url}}" target="_blank">{{data.url}}</a></div>
+        </div>
+         <div forminput="任务类型">
+            <div class="form-line "> {{data.task_type|task_type}}
+            </div>
+        </div>
+        <div forminput="影响对象类型">
+            <div class="form-line "> {{data.object_type|task_object_type}}
+            </div>
+        </div>
+         <div forminput="影响对象ID">
+            <div class="form-line "> {{data.object_id}}
+            </div>
+        </div>
+         <div forminput="创建时间">
+            <div class="form-line "> {{data.create_time | datetime}}
+            </div>
+        </div>
+         <div forminput="更新时间">
+            <div class="form-line "> {{data.update_time | datetime}}
+            </div>
+        </div>
+        <div forminput="执行结果">
+            <div class="form-line "><pre ng-if="data.result"  class="form-limit">{{data.result}}</pre>
+            </div>
+        </div>
+        <div forminput="错误码">
+            <div class="form-line ">{{data.error_code}}
+            </div>
+        </div>
+        <div forminput="执行错误">
+            <div class="form-line "><pre ng-if="data.error" class="form-limit">{{data.error}}</pre>
+            </div>
+        </div>
+        <div forminput="连续失败次数">
+            <div class="form-line ">{{data.error_count||0}}次
+            </div>
+        </div>
+        <div class="form-group mt20 ">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

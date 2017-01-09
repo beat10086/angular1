@@ -1,0 +1,77 @@
+<div pagetitle>举报列表</div>
+<div goback back-key class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>类型:</label>
+        <ul selectcon ng-model="filter.object_type" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="topic">话题</li>
+            <li selectvalue="post">帖子</li>
+            <li selectvalue="group">小组</li>
+            <li selectvalue="user">用户</li>
+            <li selectvalue="good_comment">商品评论</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>状态:</label>
+        <ul selectcon ng-model="filter.status" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="0">未处理</li>
+            <li selectvalue="1">待处理</li>
+            <li selectvalue="2">已处理</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <button ng-if="filter.submitter_id" class="btn btn-success" ui-sref="feedback/list()" ui-sref-opts="{reload: true,inherit :false}">返回全部</button>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>对象类型</th>
+            <th>对象名称</th>
+            <th>举报原因</th>
+            <th>描述</th>
+            <th>举报人</th>
+            <th>举报时间</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td>
+                {{item.object_type | objecttype}}
+            </td>
+            <td>
+                <span ng-if="item.object_type=='good_comment'">{{item.object | objectname}}</span>
+                <a  ng-if="item.object_type!='good_comment'" ui-sref="{{item.object_type}}/info({id:'{{item.object_id}}'})">{{item.object | objectname}}</a>
+            </td>
+            <td>
+                {{item.reason ||'未知'}}
+            </td>
+            <td>
+                {{item.description ||''}}
+            </td>
+            <td>
+                <a ui-sref="user/info({id:'{{item.reporter_id}}'})">{{item.reporter.nick||item.reporter.username}}</a>
+            </td>
+            <td> {{item.create_time | datetime}}</td>
+            <td>
+                <ul selectcon ng-model="item.status" ng-change="changeStatus($index)">
+                    <li selectvalue="0">未处理</li>
+                    <li selectvalue="1">待处理</li>
+                    <li selectvalue="2">已处理</li>
+                </ul>
+            </td>
+            <td class="t_bar">
+                <button class="btn btn-link" ng-click="delete($index)">删除</button>
+     
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>

@@ -1,0 +1,52 @@
+<div pagetitle>淘宝交易详情列表</div>
+<div goback back-key="{{filter.category_id}}" class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>状态:</label>
+        <ul selectcon ng-model="filter.order_status" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="0">订单创建</li>
+            <li selectvalue="10">订单付款</li>
+            <li selectvalue="50">订单结算</li>
+            <li selectvalue="60">订单失效</li>
+        </ul>
+    </div>
+    <div class="form-group navbar-right" role="search">
+        <input type="text" class="form-control" ng-model="filter.keyword" placeholder="搜索">
+        <button type="button" class="btn btn-primary" ng-click="search()">搜 索</button>
+        <div  class=" btn-file-con btn btn-success"  >
+            添加附件
+            <input type="file" class=" btn-file"  ng-model="data.file" ng-file-select />
+            <div class="file-pop" ng-show="data.file">{{data.file[0].name}}</div>
+        </div>
+        <button type="button" class="btn btn-default" ng-click="import()">导 入</button>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+    <tr pages page-type="mini"></tr>
+    <tr>
+        <th>创建时间</th>
+        <th>订单编号</th>
+        <th>商品编码</th>
+        <th>订单状态</th>
+        <th>商品数</th>
+        <th>付款金额</th>
+        <th>导入时间</th>
+    </tr>
+</thead>
+<tbody>
+    <tr ng-repeat="item in data">
+        <td>{{item.order_time | datetime }}</td>
+        <td>{{item.order_id}}</td>
+        <td>{{item.good_id}}</td>
+        <td>{{item.order_status |order_status}}</td>
+        <td>{{item.good_num}}</td>
+        <td>{{item.pay_amount }}</td>
+        <td>{{item.create_time | datetime }}</td>
+    </tr>
+</tbody>
+<tfoot>
+<tr pages></tr>
+</tfoot>
+</table>
+<div nodata></div>

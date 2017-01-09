@@ -1,0 +1,61 @@
+<div pagetitle>
+    <span ng-if="edit">作品详情</span>
+    <span ng-if="!edit">添加作品</span>
+</div>
+<div goback></div>
+<div class="form-content">
+    <form class="form-horizontal" role="form" ng-submit="submit()">
+        <div forminput="添加老师">
+            <div realtime ng-model="data.star_ids" multiple="multiple" link-obj="stars" search-type="star">
+                <input type="text"   placeholder="搜索老师名称以添加老师(可追加)">
+            </div>
+        </div>
+        <!--   <div forminput="老师ID"  required>
+            <input type="text" ng-model="data.star_ids" placeholder="通过老师名称称搜索">
+        </div> -->
+        <div forminput="参演老师" required>
+            <ul>
+                <li class="form-line clearfix" ng-repeat="star in data.stars">
+                    <span>{{star.names | arraytostring}}
+                    <button type="button" class="close in-close" ng-click="removeStar($index)"><span >×</span></button>
+                    </span>
+                </li>
+            </ul>
+        </div>
+        <div forminput="作品名称" required>
+            <input type="text" ng-model="data.title" placeholder="作品名称:长度范围2-50">
+        </div>
+        <div forminput="发行号" required>
+            <input type="text" ng-model="data.issue_no" placeholder="发行号:长度范围2-20">
+        </div>
+        <div forminput="发行日期">
+            <input type="text" dateselect ng-model="data.release_date" placeholder="发行日期:格式类似“2014-04-25”">
+        </div>
+        <div forminput="排序位置">
+            <input type="text" ng-model="data.position" placeholder="排序位置">
+        </div>
+        <div forminput="封面图片">
+            <div uploadfile ng-model="data.cover" key="cover_id">
+                <div class="button btn btn-success button" ng-file-select ng-file-change="upload($files)">添加附件</div>
+            </div>
+        </div>
+        <div forminput="图片是否涉黄" ng-if="data.cover_id.length">
+            <ul selectcon ng-model="data.is_cover_sexy">
+                <li selectvalue="true">是</li>
+                <li selectvalue="false">否</li>
+            </ul>
+        </div>
+        <div forminput="状态">
+            <ul selectcon ng-model="data.status">
+                <li selectvalue="1">正常</li>
+                <li selectvalue="2">隐藏</li>
+            </ul>
+        </div>
+        <div class="form-group mt20 ">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

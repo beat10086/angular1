@@ -1,0 +1,81 @@
+<div pagetitle>意见反馈列表</div>
+<div goback back-key class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>平台:</label>
+        <ul selectcon ng-model="filter.platform" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="android">Android</li>
+            <li selectvalue="ios">IOS</li>
+            <li selectvalue="wp">WP</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>状态:</label>
+        <ul selectcon ng-model="filter.status" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="0">未处理</li>
+            <li selectvalue="1">待处理</li>
+            <li selectvalue="2">已处理</li>
+        </ul>
+    </div>
+    <div class="form-group">
+         <button  ng-if="filter.submitter_id" class="btn btn-success" ui-sref="feedback/list()" ui-sref-opts="{reload: true,inherit :false}">返回全部</button>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>反馈者</th>
+            <th>反馈内容</th>
+            <th>回复</th>
+            <th>平台</th>
+            <th>应用</th>
+            <th>提交时间</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td>
+                <a ui-sref="user/info({id:'{{item.submitter_id}}'})">{{item.submitter.nick||item.submitter.username}}</a>
+            </td>
+            <td>
+                {{item.content}}
+            </td>
+            <td>
+                {{item.reply}}
+            </td>
+            <td>
+                {{item.platform.name}}
+                <br> {{item.platform.version}}
+            </td>
+            <td>
+                {{item.app.name}}
+                <br> {{item.app.version}}
+            </td>
+            <td> {{item.create_time | datetime}}</td>
+            <td>
+                <ul selectcon ng-model="item.status" ng-change="changeStatus($index)">
+                    <li selectvalue="0">未处理</li>
+                    <li selectvalue="1">待处理</li>
+                    <li selectvalue="2">已处理</li>
+                </ul>
+            </td>
+            <td class="t_bar">
+                <a ui-sref="feedback/info({id:'{{item.id}}'})">详情</a>
+                <button class="btn btn-link" ng-click="delete($index)">删除</button>
+                <button class="btn btn-link" ng-click="reply($index)">回复</button>
+                <a ui-sref="feedback/list({submitter_id:'{{item.submitter_id}}'})"  ui-sref-opts="{reload: true,inherit :false}">只看该用户</a>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>
+<div ui-modal class="replyPop" title="回复" ng-submit="replySubmit()">
+    <textarea class="form-control" ng-model="replyData.reply" placeholder="回复内容"></textarea>
+</div>

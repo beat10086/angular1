@@ -1,0 +1,110 @@
+
+<div pagetitle>
+    <span ng-if="edit">老师详情</span>
+    <span ng-if="!edit">添加老师</span>
+</div>
+<div goback>
+    <span ng-if="edit">
+        <button class="btn btn-danger" ng-click="delete()"><span class="glyphicon glyphicon-trash"></span> 删除</button>
+        <a class="btn btn-default" ng-href="#/star/add_work?star_id={{data.id}}">添加作品</a>
+        <a class="btn btn-default" ng-href="#/star/add_photo?star_id={{data.id}}">添加写真</a>
+        <a class="btn btn-default" ng-href="#/star/work_list?star_id={{data.id}}&sort=custom_asc">查看作品</a>
+        <a class="btn btn-default" ng-href="#/star/photo_list?star_id={{data.id}}&sort=custom_asc">查看写真</a>
+        <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                推荐
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                <li role="presentation"><a add-recommend data-type="hot_star" data-object_id="{{data.id}}" data-object_type="star">推荐热门</a></li>
+                <li role="presentation"><a add-recommend data-type="new_star" data-object_id="{{data.id}}" data-object_type="star">推荐新生代</a></li>
+                <li role="presentation"><a add-recommend data-type="ad_group_index" data-object_id="{{data.id}}" data-object_type="star">推荐广场Banner</a></li>
+                <li role="presentation"><a add-recommend data-type="daily_star" data-object_id="{{data.id}}" data-object_type="star">推荐每日之星</a></li>
+            </ul>
+        </div>
+    </span>
+</div>
+<div class="form-content">
+    <form class="form-horizontal" role="form" ng-submit="submit()">
+        <div forminput="老师名称" required>
+            <input type="text" ng-model="data.names" placeholder="老师名称:长度范围2-20,多个用,隔开">
+        </div>
+        <div forminput="昵称">
+            <input type="text" ng-model="data.nicks" placeholder="昵称：多个用“,”分隔,单个长度24，最多10个">
+        </div>
+        <div forminput="头像" required>
+            <div uploadfile ng-model="data.avatars" key="avatar_ids" multiple="multiple">
+                <div class="button btn btn-success button" multiple="multiple" ng-file-select ng-file-change="upload($files)">上传头像</div>
+            </div>
+        </div>
+        <div forminput="标签">
+            <ul multiselect ng-model="data.tags">
+                <li ng-repeat="tag in star_tags" selectvalue="{{tag.name}}">{{tag.name}}</li>
+            </ul>
+        </div>
+        <div forminput="生日">
+            <input type="text" dateselect ng-model="data.birthday" placeholder="请选择">
+        </div>
+        <div forminput="星座">
+            <input type="text" ng-model="data.constellation" placeholder="星座:水瓶, 双鱼, 白羊, 金牛, 双子, 巨蟹, 狮子, 处女, 天秤, 天蝎, 射手, 摩羯">
+        </div>
+        <div forminput="出生地">
+            <input type="text" ng-model="data.birthplace" placeholder="出生地">
+        </div>
+        <div forminput="血型">
+            <ul selectcon ng-model="data.blood">
+                <li selectvalue="A" selected=>A</li>
+                <li selectvalue="B">B</li>
+                <li selectvalue="AB">AB</li>
+                <li selectvalue="O">O</li>
+                <li selectvalue=>未知</li>
+            </ul>
+        </div>
+        <div forminput="身高">
+            <input type="text" ng-model="data.height" placeholder="身高:单位cm">
+        </div>
+        <div forminput="体重">
+            <input type="text" ng-model="data.weight" placeholder="体重:单位kg">
+        </div>
+        <div forminput="三围">
+            <input type="text" ng-model="data.bwh" placeholder="如：B84(D) W58 H85">
+        </div>
+        <div forminput="兴趣爱好">
+            <input type="text" ng-model="data.interest" placeholder="兴趣爱好:长度范围10-100">
+        </div>
+        <div forminput="鞋码">
+            <input type="text" ng-model="data.shoe" placeholder="鞋码:长度范围10-100">
+        </div>
+        <div forminput="活跃年代">
+            <input type="text" ng-model="data.active_year">
+        </div>
+        <div forminput="状态">
+            <ul selectcon ng-model="data.status">
+                <li selectvalue="1">正常</li>
+                <li selectvalue="2">隐藏</li>
+            </ul>
+        </div>
+        <div forminput="作品信息">
+            <textarea style="height:300px" ng-model="data.work_info" placeholder="作品信息:长度范围10-10000" rows="3"></textarea>
+        </div>
+        <div forminput="简介">
+            <textarea style="height:300px"  ng-model="data.intro" placeholder="简介" rows="3"></textarea>
+        </div>
+        <div forminput="海报" >
+            <div uploadfile ng-model="data.poster" key="poster_id" >
+                <div class="button btn btn-success button" ng-file-select ng-file-change="upload($files)">添加附件</div>
+            </div>
+        </div>
+        <div forminput="小海报" >
+            <div uploadfile ng-model="data.small_poster" key="small_poster_id" multiple="multiple">
+                <div class="button btn btn-success button" multiple="multiple" ng-file-select ng-file-change="upload($files)">添加附件</div>
+            </div>
+        </div>
+        <div class="form-group mt20 ">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

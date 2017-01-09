@@ -1,0 +1,131 @@
+<div pagetitle>
+    <span ng-if="edit">云购详情</span>
+    <span ng-if="!edit">添加云购</span>
+</div>
+<div goback>
+</div>
+<div class="form-content">
+    <form class="form-horizontal" role="form" ng-submit="submit()">
+        <div ng-if="[2,3].indexOf(data.status)>-1" class="form-con" style="padding:0">
+            <div forminput="获奖用户">
+                <div class="form-line">
+                    <a ui-sref="user/info({id:'{{data.cloud_reward.user.id}}'})">{{data.cloud_reward.user |internal}}</a>
+                </div>
+            </div>
+            <div forminput="中奖号码">
+                <div class="form-line">{{data.cloud_reward.code}}</div>
+            </div>
+            <div forminput="本云购买">
+                <div class="form-line">{{data.cloud_reward.total_copies}}份</div>
+            </div>
+            <div forminput="客户端揭晓时间">
+                <div class="form-line">{{data.cloud_reward.show_time |datetime}}</div>
+            </div>
+            <div forminput="服务端揭晓时间">
+                <div class="form-line">{{data.cloud_reward.announce_time |datetime}}</div>
+            </div>
+            <div forminput="中奖用户购买时间">
+                <div class="form-line">{{data.cloud_reward.buy_time |datetime}}</div>
+            </div>
+            <div forminput="领取状态">
+                <div class="form-line">
+                    <span ng-class="{red:data.cloud_reward.status==1}">{{data.cloud_reward.status | rewardstatus}}</span>
+                </div>
+            </div>
+        </div>
+        <div forminput="云购期数" ng-if="edit">
+            <div class="form-line">第{{data.cloud_num}}期</div>
+        </div>
+        <div forminput="最大期数" ng-if="!edit" required>
+            <input type="number" ng-model="data.cloud_times" placeholder="最大期数" ng-disabled="filter.rewarded">
+        </div>
+        <div forminput="最大期数" ng-if="edit">
+            <div class="form-line">{{data.max_cloud_num + data.cloud_times}}期</div>
+        </div>
+        <div forminput="增加期数" ng-if="edit">
+            <input type="number" ng-model="data.cloud_times" placeholder="增加期数" ng-disabled="filter.rewarded">
+        </div>
+        <div forminput="自动下一期" required>
+            <ul selectcon ng-model="data.is_auto_cloud">
+                <li selectvalue='true'>是</li>
+                <li selectvalue='false'>否</li>
+            </ul>
+        </div>
+        <div forminput="购买剩余份数" ng-if="data.status==1">
+            <div class="form-line">{{data.remain_copies}}</div>
+        </div>
+        <div forminput="预定剩余份数" ng-if="data.status==1">
+            <div class="form-line">{{data.book_remain_copies}}</div>
+        </div>
+        <div forminput="创建时间" ng-if="edit">
+            <div class="form-line">{{data.create_time |datetime}}</div>
+        </div>
+        <div forminput="开启时间">
+            <input type="text" dateselect ng-model="data.start_time" ng-change="updateDate(1)" min-view="0" format="yyyy-mm-dd hh:ii:00" placeholder="有效天数(默认当前时间)" ng-change="updateDate(true)" ng-disabled="filter.rewarded">
+        </div>
+        <div forminput="有效小时数" required>
+            <input type="number" ng-model="data.closing_hours" placeholder="有效小时数" ng-change="updateDate(2)" ng-disabled="filter.rewarded">
+        </div>
+        <div forminput="截止时间" required>
+            <input type="text" dateselect ng-model="data.closing_time" min-view="0" format="yyyy-mm-dd hh:ii:00" placeholder="请选择" ng-change="updateDate(3)" ng-disabled="filter.rewarded">
+        </div>
+        <div forminput="选择商品" ng-if="!edit" required>
+            <div realtime trimclear="true" ng-model="data.good_id" search-type="good" ng-change="choseGood()">
+                <input type="text" class="form-control" ng-model="data.searchname" placeholder="搜索商品以添加">
+            </div>
+        </div>
+        <div forminput="份数" ng-if="!data.status||data.status==1" required>
+            <input type="number" ng-model="data.max_copies" placeholder="份数" >
+        </div>
+        <div forminput="限制用户购买份数">
+            <input type="number" ng-model="data.user_limit_copies" placeholder="份数" ng-disabled="filter.rewarded">
+        </div>
+        <div forminput="用户云购码详" ng-if="data.status==3">
+            <table class="table">
+                <tr>
+                    <th>用户</th>
+                    <th>号码</th>
+                    <th>购买时间</th>
+                </tr>
+                <tr ng-repeat="uc in data.user_clouds">
+                    <td>
+                        <a ui-sref="user/info({id:'{{uc.user.id}}'})">{{uc.user |internal}}</a>
+                    </td>
+                    <td>
+                        {{uc.codes}}
+                    </td>
+                    <td>{{uc.buy_time|datetime}}</td>
+                </tr>
+            </table>
+        </div>
+        <div forminput="中奖用户共购买" ng-if="data.status==3">
+            <div class="form-line">{{data.copies_total}}份</div>
+        </div>
+        <div forminput="状态" ng-if="edit">
+            <div class="form-line">{{data.status | cloudstatus}}</div>
+        </div>
+        <div forminput="是否隐藏">
+            <ul selectcon ng-model="data.is_deleted">
+                <li selectvalue="true">隐藏</li>
+                <li selectvalue="false">显示</li>
+            </ul>
+        </div>
+        <div forminput="商品名称" required>
+            <input type="text" ng-model="data.name" placeholder="商品名称" ng-disabled="filter.rewarded">
+        </div>
+        <div forminput="商品图片" required>
+            <div uploadfile ng-model="data.image" key="image_id">
+                <div class="button btn btn-success button" multiple="multiple" ng-file-select ng-file-change="upload($files)">添加附件</div>
+            </div>
+        </div>
+        <div forminput="商品介绍" >
+            <textarea style="height:200px" type="text" ng-model="data.intro" placeholder="商品介绍" ng-disabled="filter.rewarded"></textarea>
+        </div>
+        <div class="form-group mt20 " ng-if="!filter.rewarded">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,17 @@
+<div ng-controller="uploadCtrl" class="upload-con">
+    <div ng-transclude></div>
+    <div class="progress" ng-class="{show:progressing}">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" ng-style="{width:progressPercentage}">
+        </div>
+    </div>
+    <ul class="upload-list clearfix" dnd-list="files" ng-if="preview">
+        <li class="img-con img-con-md" ng-repeat="file in files" ng-if="file.url" dnd-draggable="file" dnd-moved="files.splice($index, 1)" dnd-effect-allowed="move" dnd-selected="models.selected = file" ng-class="{'selected': models.selected === file}">
+            <img ng-src="{{file.url}}" ng-if="file.mime.indexOf('image')>-1">
+            <a class="file-con" ng-href="{{file.url}}" ng-if="file.mime.indexOf('image')==-1">
+                <b>{{file.filename|filemime}}</b>
+                <i>{{file.filename}}</i>
+            </a>
+            <p ng-click="deleteFile($index)">×</p>
+        </li>
+    </ul>
+</div>

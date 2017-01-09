@@ -1,0 +1,231 @@
+<div pagetitle>用户列表</div>
+<div goback back-key class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>排序:</label>
+        <ul selectcon ng-model="filter.sort" ng-change="search()">
+            <li selectvalue="">默认</li>
+            <li selectvalue="register_time_asc">按注册时间顺序</li>
+            <li selectvalue="register_time_desc">按注册时间倒序</li>
+            <li selectvalue="nick_asc">按昵称顺序</li>
+            <li selectvalue="nick_desc">按昵称倒序</li>
+            <li selectvalue="coins_asc">按金币升序</li>
+            <li selectvalue="coins_desc">按金币倒序</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>状态:</label>
+        <ul selectcon ng-model="filter.status" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="1">正常</li>
+            <li selectvalue="2">禁用</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>内外用户:</label>
+        <ul selectcon ng-model="filter.is_internal" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="1">内部</li>
+            <li selectvalue="0">外部</li>
+        </ul>
+    </div>
+    <div class="form-group">
+        <label>私信状态</label>
+        <ul selectcon ng-model="filter.msg_status" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="0">全部</li>
+            <li selectvalue="1">有新回复</li>
+        </ul>
+    </div>
+    <div class="form-group navbar-right" role="search">
+        <input type="text" class="form-control" ng-model="filter.keyword" placeholder="搜索">
+        <button type="button" class="btn btn-primary" ng-click="search()">搜 索</button>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th>用户名</th>
+            <th>头像</th>
+            <th>昵称</th>
+            <th>性别</th>
+            <th>邮箱</th>
+            <th>手机</th>
+            <th>金币</th>
+            <th>是否内部</th>
+            <th>是否涉黄</th>
+            <th>状态</th>
+            <th>注册时间</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="user in data">
+            <td>
+                {{user.username}}
+            </td>
+            <td>
+                <div class="img-con" ng-if="user.avatar.url">
+                    <img ng-src="{{user.avatar.url}}">
+                </div>
+            </td>
+            <td>{{user.nick}}</td>
+            <td>
+                {{user.gender|genderfilter}}
+            </td>
+            <td>{{user.email}}</td>
+            <td>{{user.mobile}}</td>
+            <td>{{user.coins}}</td>
+            <td>
+                {{user.is_internal|booleanfilter}}
+            </td>
+            <td>
+                <ul selectcon ng-model="user.is_sexy" ng-change="changeCoverSex($index)">
+                    <li selectvalue="true">是</li>
+                    <li selectvalue="false">否</li>
+                </ul>
+            </td>
+            <td>
+                {{user.status | disable }}
+            </td>
+            <td>
+                {{user.create_time | datetime}}
+            </td>
+            <td class="t_bar">
+                <a ui-sref="user/info({id:'{{user.id}}', honor:'{{user.honor}}'})">详情</a>
+                <a ui-sref="mall/address_list({user_id:'{{user.id}}',keyword:'{{user.nick}}'})">地址列表</a>
+                <button class="btn btn-link" ng-click="muteUser($index)">禁言</button><br />
+                <button class="btn btn-link" add-recommend data-type="hot_user" data-object_id="{{user.id}}" data-object_type="user">推荐达人</button>
+                <button class="btn btn-link" ng-click="userHonor($index)">头衔设定</button><br />
+                <a ng-if="user.msg_status==undefined" ui-sref="user/msglist({id:'{{user.id}}',nick:'{{user.nick}}'})">发送私信</a>
+                <a ng-if="user.msg_status!=undefined" ui-sref="user/msglist({id:'{{user.id}}',nick:'{{user.nick}}'})">发送私信<span ng-show="user.msg_status" class="badge">{{user.msg_status}}</span></a>
+                <!--
+                <button ng-if="user.pmsg==undefined" class="btn btn-link" ng-click="msgInfo($index)">发送私信</button>
+                <button ng-if="user.pmsg!=undefined" class="btn btn-link" ng-click="msgInfo($index)">发送私信<span ng-show="user.pmsg.user_msg" class="badge">{{user.pmsg.user_msg}}</span></button>
+                -->
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>
+<div class="modal fade mutebox">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">禁言</h4>
+            </div>
+            <div class="modal-body">
+                <label class="form-line">禁言天数: </label>
+                <input type="number" min='1' class="form-control" ng-model="mute.duration" placeholder="禁言天数">
+                <label class="form-line">原因: </label>
+                <input type="text" class="form-control" ng-model="mute.reason" placeholder="禁言原因">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" ng-click="muteSubmit()">确认</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<div nodata></div>
+<div class="modal fade honorbox">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">头衔设定</h4>
+            </div>
+            <div class="modal-body">
+                <label class="form-line">选择头衔: </label>
+                <ul selectcon ng-model="honor.select">
+                    <li selectvalue="1">船长</li>
+                    <li selectvalue="2">指挥官</li>
+                    <li selectvalue="3">大副</li>
+                    <li selectvalue="4">水手长</li>
+                    <li selectvalue="5">无权限</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" ng-click="honorSubmit()">确认</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<style>
+    .msg_history{
+        width:100%;
+        height:360px;
+        overflow-y:scroll;
+        border:1px solid #000;
+    }
+    .time_left{
+       padding-left:10px;
+       text-align:left;	    
+       font-size:12px;
+       
+    }
+    .time_right{
+       padding-right:10px;
+       text-align:right;
+       font-size:12px;
+    }
+    .msg_left{
+       padding-left:15px;
+       text-align:left;
+       font-size:15px;
+    }
+    .msg_right{
+       padding-right:15px;
+       text-align:right;
+       font-size:15px;
+
+    }
+</style>
+<div class="modal fade replyMsg">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">回复私信</h4>
+            </div>
+            <div class="modal-body">
+                <label class="form-line">历史私信: </label>
+                <div class="msg_history">
+                    <div ng-if="msginfo.msg !=undefined" ng-repeat="record in msginfo.msg.record">
+                        <div class="time_left" ng-if="record.mine">
+                             {{record.send_time}}
+                        </div>
+                        <div class="msg_left" ng-if="record.mine">
+                             {{record.content}}
+                        </div>
+                        <div class="time_right" ng-if="!record.mine">
+                             {{record.send_time}}
+                        </div>
+                        <div class="msg_right" ng-if="!record.mine"> 
+                             {{record.content}}
+                        </div>
+                    </div>
+                </div>
+                <label class="form-line">发新私信: </label>
+                <textarea class="form-control" ng-model="msginfo.reply" placeholder="私信内容"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" ng-click="useMsgSubmit()">确认</button>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal-dialog -->
+</div>

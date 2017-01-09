@@ -1,0 +1,81 @@
+<div pagetitle>
+    <span ng-if="edit">时间条件对象详情</span>
+    <span ng-if="!edit">添加时间条件对象</span>
+</div>
+<div goback></div>
+<div class="form-content">
+    <form class="form-horizontal" role="form" ng-submit="submit()">
+        <div forminput="类型" class="col-sm-6" ng-if="!edit">
+            <ul selectcon ng-model="data.type" >
+                <li selectvalue="1">音频电台</li>
+                <li selectvalue="2">免费喇叭</li>
+                 <li selectvalue="3">话题审核</li>
+            </ul>
+        </div>
+        <div forminput="类型" class="col-sm-6" ng-if="edit">
+           <div class="form-line">{{{1:'音频电台',2:'免费喇叭',3:'话题审核'}[data.type] }}</div>
+        </div>
+        <div class="time-ul-area clearfix">
+            <div forminput="月" class="col-sm-6">
+                <ul multiselect ng-model="data.month">
+                    <li ng-repeat="tag in monthList" selectvalue="{{tag}}">{{tag}}月</li>
+                </ul>
+            </div>
+            <div forminput="日" class="col-sm-6">
+                <ul multiselect ng-model="data.day">
+                    <li ng-repeat="tag in dayList" selectvalue="{{tag}}">{{tag}}日</li>
+                </ul>
+            </div>
+            <div forminput="周" class="col-sm-6">
+                <ul multiselect ng-model="data.week">
+                    <li ng-repeat="tag in weekList" selectvalue="{{tag}}">周{{tag+1}}</li>
+                </ul>
+            </div>
+            <div forminput="小时" class="col-sm-6">
+                <ul multiselect ng-model="data.hour">
+                    <li ng-repeat="tag in hourList" selectvalue="{{tag}}">{{tag}}时</li>
+                </ul>
+            </div>
+            <div forminput="分钟" class="col-sm-6">
+                <ul multiselect ng-model="data.minute">
+                    <li ng-repeat="tag in minuteList" selectvalue="{{tag}}">{{tag}}分</li>
+                </ul>
+            </div>
+        </div>
+        <div ng-if="data.type==1">
+            <div forminput="标题" required>
+                <input type="text" ng-model="data.obj.title" placeholder="标题">
+            </div>
+            <div forminput="音频文件" required>
+                <div uploadfile ng-model="data.obj.audio" key="audio_id">
+                    <div class="button btn btn-success button" ng-file-select ng-file-change="upload($files)">添加附件</div>
+                </div>
+            </div>
+        </div>
+        <div ng-if="data.type==3">
+            <div forminput="关联设备">
+                <table class="table table-bordered table-striped ">
+                    <tr ng-repeat="token in data.obj.device_tokens track by $index">
+                       <td>
+                           <input required class="form-control" ng-model="data.obj.device_tokens[$index]" placeholder="设备Token"/>
+                       </td>
+                       <td>
+                           <button type="button" class="btn btn-link" ng-click="deleteToken($index)">删除</button>
+                       </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <button type="button" class="btn btn-default" ng-click="addToken()">添加</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="form-group mt20 ">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

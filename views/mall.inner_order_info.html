@@ -1,0 +1,168 @@
+<div pagetitle>
+    <span>自营订单详情</span>
+</div>
+<div goback>
+    <a class="btn btn-default" href="#/mall/coupon_list?user_id={{data.user.id}}&keyword={{data.user.nick||data.user.username}}">查看用户优惠券</a>
+    <span ng-show="data" ng-if="data.status == 30">
+    <button type="button" class="btn btn-success" ng-click="deliverXls()">导出快递</button>
+    <button type="button" class="btn btn-success" ng-click="detailsXls()">导出货单</button>
+    </span>
+</div>
+<div class="form-content">
+    <form class="form-horizontal" role="form" ng-submit="submit()">
+        <div form-title>订单信息</div>
+        <div forminput="订单ID">
+            <div class="form-line">{{data.id}}</div>
+        </div>
+        <div forminput="订单编号">
+            <div class="form-line">{{data.extern_order_id}}</div>
+        </div>
+        <div forminput="订单状态">
+            <div class="form-line">{{data.status_message}}</div>
+        </div>
+        <div forminput="创建时间">
+            <div class="form-line">{{data.create_time | datetime}}</div>
+        </div>
+        <div forminput="实付金额">
+            <div class="form-line">
+                <span ng-if="data.status!=0">{{data.settlement_detail.pay_amount | price}}</span>
+                <input class="form-control" ng-if="data.status==0" type="text" ng-model="data.settlement_detail.pay_amount" placeholder="实付金额">
+                <span class="note">(包含邮费{{data.settlement_detail.deliver_price | price}})</span>
+            </div>
+        </div>
+        <div forminput="优惠金额">
+            <div class="form-line">
+                {{data.settlement_detail.discount | price}}
+            </div>
+        </div>
+        <div forminput="物流类型">
+            <div class="form-line">
+                <span ng-if="data.status==30" style="color:red;">{{ data.deliver.name }}</span>
+                <span ng-if="data.status!=30">{{ data.deliver.name }}</span>
+            </div>
+        </div>
+        <div forminput="买家备注">
+            <div class="form-line">
+                {{data.message||'无'}}
+            </div>
+        </div>
+        <div form-title>买家信息</div>
+        <div forminput="收货人">
+            <div ng-if="data.status!=10" class="form-line">
+                {{data.address.consignee}}
+            </div>
+            <input ng-if="data.status==10" class="form-control" type="text" ng-model="data.address.consignee">
+        </div>
+        <div forminput="联系电话">
+            <div ng-if="data.status!=10" class="form-line">
+                {{data.address.mobile}}
+            </div>
+            <input ng-if="data.status==10" class="form-control" type="text" ng-model="data.address.mobile">
+        </div>
+        <div forminput="收货地址" required>
+            <div ng-if="data.status!=10" class="form-line">
+                {{data.address.detailed_address}}
+            </div>
+            <input ng-if="data.status==10" class="form-control" type="text" ng-model="data.address.detailed_address">
+        </div>
+        <div ng-if="data.status==30">
+            <div form-title>物流信息</div>
+            <div forminput="收货地址">
+                <div class="form-line">
+                    {{data.address.detailed_address}}
+                </div>
+            </div>
+            <div forminput="物流单号">
+                <div class="form-line">
+                    <span ng-if="data.status!=30">{{data.deliver_id}}</span>
+                    <input class="form-control" ng-if="data.status==30" type="text" ng-model="data.deliver_id" placeholder="实付金额">
+                    <a deliver="{{data.deliver_id}}">查看物流</a>
+                </div>
+            </div>
+        </div>
+        <div ng-if="data.status==45||data.status==20||data.status==70||data.status==80">
+            <div form-title ng-if="data.status==20 || data.status==70">退款相关</div>
+            <div form-title ng-if="data.status==45 || data.status==80">退货相关</div>
+            <div forminput="申请原因">
+                <div class="form-line">
+                    {{data.refund.reason}}
+                </div>
+            </div>
+            <div forminput="预估退款金额" ng-if="data.status==20 || data.status==45">
+                <div class="form-line">
+                    {{data.refund.refund_amount | price }}
+                </div>
+            </div>
+            <div forminput="退款金额" ng-if="data.status==70 || data.status==80">
+                <div class="form-line">
+                    {{data.refund.refund_amount | price }}
+                </div>
+            </div>
+            <div forminput="图片">
+                <div class="upload-list clearfix">
+                    <div class="img-con img-con-md "  ng-repeat="img in data.refund.images" >
+                        <img ng-src="{{img.url}}" >
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-if="data.status==60 && data.expire">
+            <div form-title ng-if="data.status==60">失效相关</div>
+            <div forminput="原因">
+                <div class="form-line">
+                    {{ data.expire.reason }}
+                </div>
+            </div>
+            <div forminput="返还金额">
+                <div class="form-line">
+                    {{ data.expire.back_amount }}
+                </div>
+            </div>
+        </div>
+        <div form-title>订单商品</div>
+        <div forminput="商品">
+            <div class="form-line">
+                <table class="table table-bordered table-striped ">
+                    <thead>
+                        <tr>
+                            <th>商品图片</th>
+                            <th>商品名称</th>
+                            <th>购买型号</th>
+                            <th>商品单价</th>
+                            <th>数量</th>
+                            <th>礼品套餐</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="item in data.details">
+                            <td>
+                                <div class="img-con ">
+                                    <img getstyleimg ng-model="item.good.styles" index="{{item.style_index}}">
+                                </div>
+                            </td>
+                            <td><a ui-sref="mall/inner_good_info({id:'{{item.good.id}}'})">{{item.good.name}}</a></td>
+                            <td><span getstyle ng-model="item.good.styles" key="name" index="{{item.style_index}}"></span></td>
+                            <td>{{item.price | price}}</td>
+                            <td>{{item.num}}</td>
+                            <td ng-if="data.status == 10 || data.status == 30">
+                                <ul selectcon ng-model="item.gift_package_id">
+                                     <li selectvalue="">无</li>
+                                    <li selectvalue="{{ gift.id }}" ng-repeat="gift in gift_packages">{{gift.package_name}}</li>
+                                </ul>
+                            </td>
+                            <td ng-if="data.status != 10 && data.status != 30">
+                                <span ng-if="item.gift_package">{{ item.gift_package.package_name }}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="form-group mt20 ">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

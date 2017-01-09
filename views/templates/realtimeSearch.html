@@ -1,0 +1,10 @@
+<div class="realtime-bar">
+    <div ng-transclude ></div>
+    <ul ng-show="show">
+        <li ng-repeat="item in searchdata" ng-if="item.object" ng-click="pickup($index,$event)" id="{{item.object.id}}">
+            {{item.object.name||item.object.names||(item.object.nick&&(item.object.nick!=item.object.username)&&(item.object.nick+'\n'+item.object.username))||item.object.nick||item.object.username||item.object.title}}
+        </li>
+    </ul>
+</div>
+
+

@@ -1,0 +1,50 @@
+<div pagetitle>
+<span ng-if="edit">写真详情</span>
+<span ng-if="!edit">添加写真</span>
+</div>
+<div goback></div>
+<div class="form-content">
+    <form class="form-horizontal" role="form" ng-submit="submit()">
+        <div forminput="老师名称" ng-if="!edit" required >
+            <div realtime ng-model="data.star_id" link-obj="star" search-type="star">
+                <input type="text" ng-model="data.star.names" search-type="Star" placeholder="搜索老师名称以添加老师">
+            </div>
+        </div>
+        <!-- <div forminput="老师ID" ng-if="!disabled" required>
+            <input type="text"  search-type="Star"   ng-model="data.star_id" placeholder="通过老师名称搜索">
+        </div> -->
+        <div forminput="老师名称" required ng-if="edit">
+            <!-- <div realtime  ng-model="data.star_id"> -->
+            <div class="form-line">{{data.star.names | arraytostring}}</div>
+            <!-- </div> -->
+        </div>
+        <div forminput="图片" required ng-if="edit">
+            <div uploadfile ng-model="data.image" key="image_id">
+                <div class="button btn btn-success button" ng-file-select ng-file-change="upload($files)">添加附件</div>
+            </div>
+        </div>
+        <div forminput="图片" required ng-if="!edit">
+            <div uploadfile ng-model="data.image" multiple="multiple" key="image_id">
+                <div class="button btn btn-success button" multiple="multiple" ng-file-select ng-file-change="upload($files)">添加附件</div>
+            </div>
+        </div>
+        <div forminput="图片是否涉黄" ng-if="data.image_id.length">
+            <ul selectcon ng-model="data.is_image_sexy">
+                <li selectvalue="true" selected=>是</li>
+                <li selectvalue="false">否</li>
+            </ul>
+        </div>
+        <div forminput="状态">
+            <ul selectcon ng-model="data.status">
+                <li selectvalue="1">正常</li>
+                <li selectvalue="2">隐藏</li>
+            </ul>
+        </div>
+        <div class="form-group mt20 ">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="reset" class="btn btn-default">重置</button>
+            </div>
+        </div>
+    </form>
+</div>

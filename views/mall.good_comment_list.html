@@ -1,0 +1,73 @@
+<div pagetitle>商品评论列表</div>
+<div goback back-key="{{filter.good_id||filter.user_id}}" class=" navbar-collapse navbar-form filter-bar" ng-controller="filterCtrl">
+    <div class="form-group">
+        <label>是否评分:</label>
+        <ul selectcon ng-model="filter.is_scored" ng-change="search()">
+            <li selectvalue="" selected="">默认</li>
+            <li selectvalue="true">是</li>
+            <li selectvalue="false">否</li>
+        </ul>
+    </div>
+    <div class="form-group navbar-right" role="search">
+        <button ng-if="params.publisher_id||params.order_id||params.good_id" class="btn btn-success" ui-sref="mall/good_comment_list()" ui-sref-opts="{reload: true,inherit :false}">返回全部</button>
+        <div class="form-group">
+            <div realtime trimclear="true" ng-model="filter.good_id" search-type="good" class="inline-block">
+                <input type="text" class="form-control" ng-model="filter.keyword_good" placeholder="商品">
+            </div>
+        </div>
+        <div realtime trimclear="true" ng-model="filter.publisher_id" search-type="user" class="inline-block">
+            <input type="text" ng-model="filter.keyword_user" placeholder="用户">
+        </div>
+        <button type="button" class="btn btn-primary" ng-click="search()">搜 索</button>
+    </div>
+</div>
+<table class="table table-bordered table-striped ">
+    <thead>
+        <tr pages page-type="mini"></tr>
+        <tr>
+            <th width="300px">内容</th>
+            <th colspan="2">商品</th>
+            <th width="50">评分</th>
+            <th>发表者</th>
+            <th>发表时间</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in data">
+            <td>
+                {{item.content}}
+            </td>
+            <td>
+                <div class="img-con" ng-if="item.good.images">
+                    <img ng-src="{{item.good.images[0].url}}">
+                </div>
+            </td>
+            <td>
+                <a ng-if="item.good.platform==2" ui-sref="mall/inner_good_info({id:'{{item.good_id}}'})">{{item.good.name}}</a>
+                <a ng-if="item.good.platform==1" ui-sref="mall/good_info({id:'{{item.good_id}}'})">{{item.good.name}}</a>
+            </td>
+            <td>
+                {{item.score || '无' }}
+            </td>
+            <td>
+                <a ui-sref="user/info({id:'{{item.publisher_id}}'})">{{item.publisher|internal}}</a>
+            </td>
+            <td>
+                {{item.create_time | datetime}}
+            </td>
+            <td class="t_bar">
+                <button class="btn btn-link" ng-click="delete($index)">删除</button>
+                <button class="btn btn-link" ng-click="updateTime($index)">修改评论时间</button>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr pages></tr>
+    </tfoot>
+</table>
+<div nodata></div>
+<div ui-modal class="commentPop" title="修改评论时间" ng-submit="updateSubmit()">
+    <label>评论时间:</label>
+    <input type="text" class="form-control" dateselect min-view="0" minute-step="2" format="yyyy-mm-dd hh:ii:ss" ng-model="commentData.create_time" placeholder="评论时间 ">
+</div>
